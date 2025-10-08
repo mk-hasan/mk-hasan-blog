@@ -4,9 +4,5 @@
   command = "next build"      # build command
   publish = ".next"           # output folder (plugin will serve this)
 
-
-[build.environment]
-  NEXT_DISABLE_ESLINT = "true"       # disables ESLint blocking on Netlify builds
-
 [[plugins]]
 package = "@netlify/plugin-nextjs"
