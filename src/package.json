@@ -3,11 +3,12 @@
   "version": "2.4.0",
   "private": true,
   "scripts": {
+    "start": "next dev",
     "dev": "cross-env INIT_CWD=$PWD next dev",
     "build": "cross-env INIT_CWD=$PWD next build && cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/postbuild.mjs",
-    "start": "next start",
     "serve": "next start",
-    "analyze": "cross-env ANALYZE=true next build"
+    "analyze": "cross-env ANALYZE=true next build",
+    "prepare": "husky"
   },
   "dependencies": {
     "@headlessui/react": "2.2.0",
@@ -50,6 +51,9 @@
     "@types/mdx": "^2.0.12",
     "@types/react": "^19.0.8",
     "cross-env": "^7.0.3",
+    "husky": "^9.0.0",
+    "lint-staged": "^13.0.0",
+    "prettier": "^3.6.2",
     "typescript": "^5.1.3"
   }
 }
