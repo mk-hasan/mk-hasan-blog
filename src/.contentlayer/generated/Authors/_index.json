@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Kamrul Hasan",
+    "avatar": "/static/images/avatar.png",
+    "occupation": "Lead Data Platform Engineer",
+    "email": "hasan.alive@gmail.com",
+    "twitter": "https://twitter.com/Twitter",
+    "linkedin": "https://www.linkedin.com",
+    "github": "https://github.com/mk-hasan",
+    "body": {
+      "raw": "\nI’m Md Kamrul Hasan, a Data Platform Lead and Data Engineer based in Berlin with a strong background in data engineering, agentic ai, machine learning, deep learning and cloud-based platforms. Over the past Nine years, I’ve designed and scaled Data, AI & ML platforms, built robust ETL pipelines, and developed GenAI-powered data products across industries ranging from digital services to healthcare.\n\nWith hands-on expertise in Python, Java, Golang, C++, JS and SQL, as well as cloud platforms like AWS, GCP, Azure and Databricks, I specialize in creating scalable solutions that bridge the gap between data and business needs. My work spans data architecture, MLOps/DataOps, real-time analytics, and AI/GenAi-driven applications.\n\nI hold a Master’s in Computer Science from Technical University Berlin, where I studied and researched robotics, big data, machine learning and deep learning and my master thesis was in incremental/continous/lifelong learning. My career is driven by curiosity, problem-solving, and the mission to turn complex data challenges into actionable insights.\n\nOutside of work, I’m passionate about learning emerging technologies, experimenting with agentic AI systems, and mentoring others in the data community. I also play Video games mostly multiplayer online FPS and FIFA!",
+      "code": "var Component=(()=>{var g=Object.create;var s=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var h=Object.getOwnPropertyNames;var u=Object.getPrototypeOf,b=Object.prototype.hasOwnProperty;var w=(a,e)=>()=>(e||a((e={exports:{}}).exports,e),e.exports),y=(a,e)=>{for(var t in e)s(a,t,{get:e[t],enumerable:!0})},o=(a,e,t,r)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let i of h(e))!b.call(a,i)&&i!==t&&s(a,i,{get:()=>e[i],enumerable:!(r=p(e,i))||r.enumerable});return a};var f=(a,e,t)=>(t=a!=null?g(u(a)):{},o(e||!a||!a.__esModule?s(t,\"default\",{value:a,enumerable:!0}):t,a)),v=a=>o(s({},\"__esModule\",{value:!0}),a);var d=w((k,l)=>{l.exports=_jsx_runtime});var I={};y(I,{default:()=>m,frontmatter:()=>x});var n=f(d()),x={name:\"Kamrul Hasan\",avatar:\"/static/images/avatar.png\",occupation:\"Lead Data Platform Engineer\",email:\"hasan.alive@gmail.com\",twitter:\"https://twitter.com/Twitter\",linkedin:\"https://www.linkedin.com\",github:\"https://github.com/mk-hasan\"};function c(a){let e={p:\"p\",...a.components};return(0,n.jsxs)(n.Fragment,{children:[(0,n.jsx)(e.p,{children:\"I\\u2019m Md Kamrul Hasan, a Data Platform Lead and Data Engineer based in Berlin with a strong background in data engineering, agentic ai, machine learning, deep learning and cloud-based platforms. Over the past Nine years, I\\u2019ve designed and scaled Data, AI & ML platforms, built robust ETL pipelines, and developed GenAI-powered data products across industries ranging from digital services to healthcare.\"}),(0,n.jsx)(e.p,{children:\"With hands-on expertise in Python, Java, Golang, C++, JS and SQL, as well as cloud platforms like AWS, GCP, Azure and Databricks, I specialize in creating scalable solutions that bridge the gap between data and business needs. My work spans data architecture, MLOps/DataOps, real-time analytics, and AI/GenAi-driven applications.\"}),(0,n.jsx)(e.p,{children:\"I hold a Master\\u2019s in Computer Science from Technical University Berlin, where I studied and researched robotics, big data, machine learning and deep learning and my master thesis was in incremental/continous/lifelong learning. My career is driven by curiosity, problem-solving, and the mission to turn complex data challenges into actionable insights.\"}),(0,n.jsx)(e.p,{children:\"Outside of work, I\\u2019m passionate about learning emerging technologies, experimenting with agentic AI systems, and mentoring others in the data community. I also play Video games mostly multiplayer online FPS and FIFA!\"})]})}function m(a={}){let{wrapper:e}=a.components||{};return e?(0,n.jsx)(e,{...a,children:(0,n.jsx)(c,{...a})}):c(a)}return v(I);})();\n;return Component;"
+    },
+    "_id": "authors/default.mdx",
+    "_raw": {
+      "sourceFilePath": "authors/default.mdx",
+      "sourceFileName": "default.mdx",
+      "sourceFileDir": "authors",
+      "contentType": "mdx",
+      "flattenedPath": "authors/default"
+    },
+    "type": "Authors",
+    "readingTime": {
+      "text": "1 min read",
+      "minutes": 0.955,
+      "time": 57300,
+      "words": 191
+    },
+    "slug": "default",
+    "path": "authors/default",
+    "filePath": "authors/default.mdx",
+    "toc": []
+  },
+  {
+    "name": "Sparrow Hawk",
+    "avatar": "/static/images/sparrowhawk-avatar.jpg",
+    "occupation": "Wizard of Earthsea",
+    "company": "Earthsea",
+    "twitter": "https://twitter.com/sparrowhawk",
+    "linkedin": "https://www.linkedin.com/sparrowhawk",
+    "body": {
+      "raw": "\nAt birth, Ged was given the child-name Duny by his mother. He was born on the island of Gont, as a son of a bronzesmith. His mother died before he reached the age of one. As a small boy, Ged had overheard the village witch, his maternal aunt, using various words of power to call goats. Ged later used the words without an understanding of their meanings, to surprising effect.\n\nThe witch knew that using words of power effectively without understanding them required innate power, so she endeavored to teach him what little she knew. After learning more from her, he was able to call animals to him. Particularly, he was seen in the company of wild sparrowhawks so often that his \"use name\" became Sparrowhawk.\n",
+      "code": "var Component=(()=>{var m=Object.create;var o=Object.defineProperty;var l=Object.getOwnPropertyDescriptor;var p=Object.getOwnPropertyNames;var u=Object.getPrototypeOf,f=Object.prototype.hasOwnProperty;var g=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports),k=(e,t)=>{for(var n in t)o(e,n,{get:t[n],enumerable:!0})},i=(e,t,n,s)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let r of p(t))!f.call(e,r)&&r!==n&&o(e,r,{get:()=>t[r],enumerable:!(s=l(t,r))||s.enumerable});return e};var x=(e,t,n)=>(n=e!=null?m(u(e)):{},i(t||!e||!e.__esModule?o(n,\"default\",{value:e,enumerable:!0}):n,e)),b=e=>i(o({},\"__esModule\",{value:!0}),e);var w=g((j,h)=>{h.exports=_jsx_runtime});var y={};k(y,{default:()=>d,frontmatter:()=>v});var a=x(w()),v={name:\"Sparrow Hawk\",avatar:\"/static/images/sparrowhawk-avatar.jpg\",occupation:\"Wizard of Earthsea\",company:\"Earthsea\",twitter:\"https://twitter.com/sparrowhawk\",linkedin:\"https://www.linkedin.com/sparrowhawk\"};function c(e){let t={p:\"p\",...e.components};return(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(t.p,{children:\"At birth, Ged was given the child-name Duny by his mother. He was born on the island of Gont, as a son of a bronzesmith. His mother died before he reached the age of one. As a small boy, Ged had overheard the village witch, his maternal aunt, using various words of power to call goats. Ged later used the words without an understanding of their meanings, to surprising effect.\"}),(0,a.jsx)(t.p,{children:'The witch knew that using words of power effectively without understanding them required innate power, so she endeavored to teach him what little she knew. After learning more from her, he was able to call animals to him. Particularly, he was seen in the company of wild sparrowhawks so often that his \"use name\" became Sparrowhawk.'})]})}function d(e={}){let{wrapper:t}=e.components||{};return t?(0,a.jsx)(t,{...e,children:(0,a.jsx)(c,{...e})}):c(e)}return b(y);})();\n;return Component;"
+    },
+    "_id": "authors/sparrowhawk.mdx",
+    "_raw": {
+      "sourceFilePath": "authors/sparrowhawk.mdx",
+      "sourceFileName": "sparrowhawk.mdx",
+      "sourceFileDir": "authors",
+      "contentType": "mdx",
+      "flattenedPath": "authors/sparrowhawk"
+    },
+    "type": "Authors",
+    "readingTime": {
+      "text": "1 min read",
+      "minutes": 0.63,
+      "time": 37800,
+      "words": 126
+    },
+    "slug": "sparrowhawk",
+    "path": "authors/sparrowhawk",
+    "filePath": "authors/sparrowhawk.mdx",
+    "toc": []
+  }
+]

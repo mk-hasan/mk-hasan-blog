@@ -1,0 +1,8 @@
+# netlify.toml
+[build]
+  base = "src"                # your source folder
+  command = "next build"      # build command
+  publish = ".next"           # output folder (plugin will serve this)
+
+[[plugins]]
+package = "@netlify/plugin-nextjs"

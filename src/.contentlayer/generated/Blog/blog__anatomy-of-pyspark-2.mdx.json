@@ -1,0 +1,410 @@
+{
+  "title": "Common PySpark Operations for Data Wrangling",
+  "date": "2023-11-15T00:00:00.000Z",
+  "tags": [
+    "pyspark",
+    "data-wrangling",
+    "data-engineering",
+    "dataframes"
+  ],
+  "lastmod": "2023-11-15T00:00:00.000Z",
+  "draft": false,
+  "summary": "This guide covers essential PySpark operations for data cleaning, transformation, and analysis. Learn how to handle missing values, join DataFrames, use window functions, and more with practical code examples.",
+  "images": [
+    ""
+  ],
+  "body": {
+    "raw": "\n## Introduction\n\nPySpark is a powerful tool for big data processing, but its true power lies in its rich set of APIs for **data wrangling**—the process of cleaning and transforming data into a usable format. This blog post builds on the fundamentals by showing some of the most common and useful PySpark operations for everyday data engineering tasks.\n\n---\n\n## 1. Data Cleaning and Transformation\n\nData is rarely clean. Missing values, duplicates, and incorrect data types are common issues. PySpark provides easy-to-use functions to tackle these problems.\n\n### Handling Missing Values\n\nMissing data (represented as `null` or `None`) can be a major issue. You can either drop rows with missing values or fill them in.\n\n#### Dropping Rows\nTo remove rows containing `null` in any column, use `dropna()`. To be more specific and only drop rows where a `null` exists in a particular column, use the `subset` parameter.\n\n<CodeBlock lang=\"python\">\n{`from pyspark.sql.functions import col\n\n# Drop rows with any null value\ndf_cleaned = df.dropna()\n\n# Drop rows where 'price' column is null\ndf_cleaned = df.dropna(subset=['price'])`}\n</CodeBlock>\n\n#### Filling Nulls\nTo replace `null` values with a specific value, use `fillna()`. This is great for assigning a default value or a placeholder.\n\n<CodeBlock lang=\"python\">\n{`# Fill all nulls with 'Unknown'\ndf_filled = df.fillna('Unknown')\n\n# Fill nulls in specific columns with a dictionary\ndf_filled = df.fillna({'category': 'unknown', 'rating': 0})`}\n</CodeBlock>\n\n### Renaming and Dropping Columns\n\nSometimes you need to rename columns for clarity or remove ones you no longer need. The `withColumnRenamed()` and `drop()` functions are perfect for this.\n\n<CodeBlock lang=\"python\">\n{`# Rename a single column\ndf_renamed = df.withColumnRenamed('old_name', 'new_name')\n\n# Drop a single column\ndf_dropped = df.drop('unwanted_column')\n\n# Drop multiple columns\ndf_dropped = df.drop('unwanted_column_1', 'unwanted_column_2')`}\n</CodeBlock>\n\n---\n\n## 2. Joins\n\nJoining is a fundamental operation in data processing that allows you to combine two DataFrames based on a common key. PySpark supports various types of joins.\n\n### Example Setup\nLet's create two simple DataFrames to demonstrate.\n\n<CodeBlock lang=\"python\">\n{`# Sample data\nemployee_data = [(\"John\", \"HR\"), (\"Jane\", \"IT\"), (\"Tom\", \"Finance\")]\ndept_data = [(\"HR\", \"New York\"), (\"IT\", \"San Francisco\"), (\"Sales\", \"London\")]\n\n# Create DataFrames\nemployees_df = spark.createDataFrame(employee_data, [\"name\", \"department\"])\ndepartments_df = spark.createDataFrame(dept_data, [\"dept_name\", \"location\"])\n\nemployees_df.show()\n# +----+----------+\n# |name|department|\n# +----+----------+\n# |John|        HR|\n# |Jane|        IT|\n# | Tom|   Finance|\n# +----+----------+\n\ndepartments_df.show()\n# +-------------+-------------+\n# |    dept_name|     location|\n# +-------------+-------------+\n# |           HR|     New York|\n# |           IT|San Francisco|\n# |        Sales|       London|\n# +-------------+-------------+`}\n</CodeBlock>\n\n### Common Join Types\n\n* **Inner Join**: Returns only the rows with matching keys in both DataFrames.\n* **Left Join**: Returns all rows from the left DataFrame and matching rows from the right. `null` is used for non-matches.\n* **Right Join**: Returns all rows from the right DataFrame and matching rows from the left.\n* **Full Outer Join**: Returns all rows from both DataFrames, filling in `null` where no match exists.\n\n<CodeBlock lang=\"python\">\n{`# Inner Join: Finds employees with a matching department\nemployees_df.join(departments_df, employees_df.department == departments_df.dept_name, \"inner\").show()\n# +----+----------+---------+-------------+\n# |name|department|dept_name|     location|\n# +----+----------+---------+-------------+\n# |Jane|        IT|       IT|San Francisco|\n# |John|        HR|       HR|     New York|\n# +----+----------+---------+-------------+\n\n# Left Join: Keeps all employees, even those without a matching department\nemployees_df.join(departments_df, employees_df.department == departments_df.dept_name, \"left\").show()\n# +----+----------+---------+-------------+\n# |name|department|dept_name|     location|\n# +----+----------+---------+-------------+\n# |Jane|        IT|       IT|San Francisco|\n# |John|        HR|       HR|     New York|\n# | Tom|   Finance|     null|         null|\n# +----+----------+---------+-------------+`}\n</CodeBlock>\n\n\n---\n\n## 3. Window Functions\n\n**Window functions** are a game-changer for data analysis in PySpark. They allow you to perform calculations across a set of rows that are related to the current row, without collapsing the rows into a single result. This is perfect for tasks like calculating running totals, rankings, or moving averages.\n\n### Defining a Window\nA window is defined using `Window.partitionBy()` to group the data and `orderBy()` to sort it within each group.\n\n<CodeBlock lang=\"python\">\n{`from pyspark.sql import Window\nfrom pyspark.sql.functions import rank, avg, sum\n\n# Create a sample DataFrame\ndata = [(\"A\", 1, 100), (\"A\", 2, 150), (\"A\", 3, 200),\n        (\"B\", 1, 50), (\"B\", 2, 75)]\ndf = spark.createDataFrame(data, [\"category\", \"month\", \"sales\"])\n\n# Define a window specification: Partition by category, order by month\nwindow_spec = Window.partitionBy(\"category\").orderBy(\"month\")`}\n</CodeBlock>\n\n### Common Window Functions\n\n* **Ranking**: `row_number()`, `rank()`, and `dense_rank()` assign a rank to each row within a partition.\n* **Aggregate**: `sum()`, `avg()`, `max()`, and `min()` can be applied to a window.\n\n<CodeBlock lang=\"python\">\n{`# Add a running total of sales for each category\ndf_running_total = df.withColumn(\n    'running_total_sales',\n    sum('sales').over(window_spec)\n)\n\n# Show the result\ndf_running_total.show()\n# +--------+-----+-----+-------------------+\n# |category|month|sales|running_total_sales|\n# +--------+-----+-----+-------------------+\n# |       A|    1|  100|                100|\n# |       A|    2|  150|                250|\n# |       A|    3|  200|                450|\n# |       B|    1|   50|                 50|\n# |       B|    2|   75|                125|\n# +--------+-----+-----+-------------------+`}\n</CodeBlock>\n\n### Calculating a Moving Average\nYou can also specify a frame within a window to calculate a moving average. This example calculates the average of the current row and the two preceding rows.\n\n<CodeBlock lang=\"python\">\n{`from pyspark.sql.functions import mean\n\n# Define a window for a 3-row moving average\nmoving_avg_window = Window.partitionBy(\"category\").orderBy(\"month\").rowsBetween(-2, 0)\n\ndf_moving_avg = df.withColumn(\n    'moving_avg_sales',\n    mean('sales').over(moving_avg_window)\n)\n\ndf_moving_avg.show()\n# +--------+-----+-----+----------------+\n# |category|month|sales|moving_avg_sales|\n# +--------+-----+-----+----------------+\n# |       A|    1|  100|           100.0|\n# |       A|    2|  150|           125.0|\n# |       A|    3|  200|           150.0|\n# |       B|    1|   50|            50.0|\n# |       B|    2|   75|            62.5|\n# +--------+-----+-----+----------------+`}\n</CodeBlock>\n\n---\n\n## 4. GroupBy and Aggregations\n\nThe `groupBy()` operation is essential for summarizing data. You can perform powerful aggregations like `sum()`, `count()`, `avg()`, `min()`, and `max()` on grouped data.\n\n<CodeBlock lang=\"python\">\n{`from pyspark.sql.functions import sum, count\n\n# Group by category and calculate total sales\ndf.groupBy('category').agg(\n    sum('sales').alias('total_sales'),\n    count('month').alias('number_of_months')\n).show()\n\n# +--------+-----------+----------------+\n# |category|total_sales|number_of_months|\n# +--------+-----------+----------------+\n# |       A|        450|               3|\n# |       B|        125|               2|\n# +--------+-----------+----------------+`}\n</CodeBlock>\n\n---\n\n## Conclusion\n\nMastering these core PySpark operations is fundamental to becoming a proficient data engineer or data scientist. From the basic yet crucial steps of handling missing data to the advanced power of window functions, these techniques form the building blocks for creating robust and scalable data pipelines. By combining these methods, you can transform messy, raw data into clean, insightful information ready for analysis, machine learning, and informed decision-making. Keep practicing with real-world datasets, and you’ll soon find that PySpark is not just a tool, but a powerful ally in the world of big data.",
+    "code": "var Component=(()=>{var m=Object.create;var i=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var g=Object.getOwnPropertyNames;var w=Object.getPrototypeOf,u=Object.prototype.hasOwnProperty;var f=(n,a)=>()=>(a||n((a={exports:{}}).exports,a),a.exports),y=(n,a)=>{for(var l in a)i(n,l,{get:a[l],enumerable:!0})},t=(n,a,l,o)=>{if(a&&typeof a==\"object\"||typeof a==\"function\")for(let r of g(a))!u.call(n,r)&&r!==l&&i(n,r,{get:()=>a[r],enumerable:!(o=p(a,r))||o.enumerable});return n};var v=(n,a,l)=>(l=n!=null?m(w(n)):{},t(a||!n||!n.__esModule?i(l,\"default\",{value:n,enumerable:!0}):l,n)),_=n=>t(i({},\"__esModule\",{value:!0}),n);var s=f((M,d)=>{d.exports=_jsx_runtime});var N={};y(N,{default:()=>h,frontmatter:()=>k});var e=v(s()),k={title:\"Common PySpark Operations for Data Wrangling\",date:\"2023-11-15\",lastmod:\"2023-11-15\",tags:[\"pyspark\",\"data-wrangling\",\"data-engineering\",\"dataframes\"],draft:!1,summary:\"This guide covers essential PySpark operations for data cleaning, transformation, and analysis. Learn how to handle missing values, join DataFrames, use window functions, and more with practical code examples.\",images:[\"\"]};function c(n){let a={a:\"a\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",p:\"p\",path:\"path\",span:\"span\",strong:\"strong\",svg:\"svg\",ul:\"ul\",...n.components},{CodeBlock:l}=a;return l||x(\"CodeBlock\",!0),(0,e.jsxs)(e.Fragment,{children:[(0,e.jsxs)(a.h2,{className:\"content-header\",id:\"introduction\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#introduction\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Introduction\"]}),(0,e.jsxs)(a.p,{children:[\"PySpark is a powerful tool for big data processing, but its true power lies in its rich set of APIs for \",(0,e.jsx)(a.strong,{children:\"data wrangling\"}),\"\\u2014the process of cleaning and transforming data into a usable format. This blog post builds on the fundamentals by showing some of the most common and useful PySpark operations for everyday data engineering tasks.\"]}),(0,e.jsx)(a.hr,{}),(0,e.jsxs)(a.h2,{className:\"content-header\",id:\"1-data-cleaning-and-transformation\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#1-data-cleaning-and-transformation\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"1. Data Cleaning and Transformation\"]}),(0,e.jsx)(a.p,{children:\"Data is rarely clean. Missing values, duplicates, and incorrect data types are common issues. PySpark provides easy-to-use functions to tackle these problems.\"}),(0,e.jsxs)(a.h3,{className:\"content-header\",id:\"handling-missing-values\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#handling-missing-values\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Handling Missing Values\"]}),(0,e.jsxs)(a.p,{children:[\"Missing data (represented as \",(0,e.jsx)(a.code,{children:\"null\"}),\" or \",(0,e.jsx)(a.code,{children:\"None\"}),\") can be a major issue. You can either drop rows with missing values or fill them in.\"]}),(0,e.jsxs)(a.h4,{className:\"content-header\",id:\"dropping-rows\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#dropping-rows\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Dropping Rows\"]}),(0,e.jsxs)(a.p,{children:[\"To remove rows containing \",(0,e.jsx)(a.code,{children:\"null\"}),\" in any column, use \",(0,e.jsx)(a.code,{children:\"dropna()\"}),\". To be more specific and only drop rows where a \",(0,e.jsx)(a.code,{children:\"null\"}),\" exists in a particular column, use the \",(0,e.jsx)(a.code,{children:\"subset\"}),\" parameter.\"]}),(0,e.jsx)(l,{lang:\"python\",children:`from pyspark.sql.functions import col\n\n# Drop rows with any null value\ndf_cleaned = df.dropna()\n\n# Drop rows where 'price' column is null\ndf_cleaned = df.dropna(subset=['price'])`}),(0,e.jsxs)(a.h4,{className:\"content-header\",id:\"filling-nulls\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#filling-nulls\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Filling Nulls\"]}),(0,e.jsxs)(a.p,{children:[\"To replace \",(0,e.jsx)(a.code,{children:\"null\"}),\" values with a specific value, use \",(0,e.jsx)(a.code,{children:\"fillna()\"}),\". This is great for assigning a default value or a placeholder.\"]}),(0,e.jsx)(l,{lang:\"python\",children:`# Fill all nulls with 'Unknown'\ndf_filled = df.fillna('Unknown')\n\n# Fill nulls in specific columns with a dictionary\ndf_filled = df.fillna({'category': 'unknown', 'rating': 0})`}),(0,e.jsxs)(a.h3,{className:\"content-header\",id:\"renaming-and-dropping-columns\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#renaming-and-dropping-columns\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Renaming and Dropping Columns\"]}),(0,e.jsxs)(a.p,{children:[\"Sometimes you need to rename columns for clarity or remove ones you no longer need. The \",(0,e.jsx)(a.code,{children:\"withColumnRenamed()\"}),\" and \",(0,e.jsx)(a.code,{children:\"drop()\"}),\" functions are perfect for this.\"]}),(0,e.jsx)(l,{lang:\"python\",children:`# Rename a single column\ndf_renamed = df.withColumnRenamed('old_name', 'new_name')\n\n# Drop a single column\ndf_dropped = df.drop('unwanted_column')\n\n# Drop multiple columns\ndf_dropped = df.drop('unwanted_column_1', 'unwanted_column_2')`}),(0,e.jsx)(a.hr,{}),(0,e.jsxs)(a.h2,{className:\"content-header\",id:\"2-joins\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#2-joins\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"2. Joins\"]}),(0,e.jsx)(a.p,{children:\"Joining is a fundamental operation in data processing that allows you to combine two DataFrames based on a common key. PySpark supports various types of joins.\"}),(0,e.jsxs)(a.h3,{className:\"content-header\",id:\"example-setup\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#example-setup\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Example Setup\"]}),(0,e.jsx)(a.p,{children:\"Let's create two simple DataFrames to demonstrate.\"}),(0,e.jsx)(l,{lang:\"python\",children:`# Sample data\nemployee_data = [(\"John\", \"HR\"), (\"Jane\", \"IT\"), (\"Tom\", \"Finance\")]\ndept_data = [(\"HR\", \"New York\"), (\"IT\", \"San Francisco\"), (\"Sales\", \"London\")]\n\n# Create DataFrames\nemployees_df = spark.createDataFrame(employee_data, [\"name\", \"department\"])\ndepartments_df = spark.createDataFrame(dept_data, [\"dept_name\", \"location\"])\n\nemployees_df.show()\n# +----+----------+\n# |name|department|\n# +----+----------+\n# |John|        HR|\n# |Jane|        IT|\n# | Tom|   Finance|\n# +----+----------+\n\ndepartments_df.show()\n# +-------------+-------------+\n# |    dept_name|     location|\n# +-------------+-------------+\n# |           HR|     New York|\n# |           IT|San Francisco|\n# |        Sales|       London|\n# +-------------+-------------+`}),(0,e.jsxs)(a.h3,{className:\"content-header\",id:\"common-join-types\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#common-join-types\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Common Join Types\"]}),(0,e.jsxs)(a.ul,{children:[(0,e.jsxs)(a.li,{children:[(0,e.jsx)(a.strong,{children:\"Inner Join\"}),\": Returns only the rows with matching keys in both DataFrames.\"]}),(0,e.jsxs)(a.li,{children:[(0,e.jsx)(a.strong,{children:\"Left Join\"}),\": Returns all rows from the left DataFrame and matching rows from the right. \",(0,e.jsx)(a.code,{children:\"null\"}),\" is used for non-matches.\"]}),(0,e.jsxs)(a.li,{children:[(0,e.jsx)(a.strong,{children:\"Right Join\"}),\": Returns all rows from the right DataFrame and matching rows from the left.\"]}),(0,e.jsxs)(a.li,{children:[(0,e.jsx)(a.strong,{children:\"Full Outer Join\"}),\": Returns all rows from both DataFrames, filling in \",(0,e.jsx)(a.code,{children:\"null\"}),\" where no match exists.\"]})]}),(0,e.jsx)(l,{lang:\"python\",children:`# Inner Join: Finds employees with a matching department\nemployees_df.join(departments_df, employees_df.department == departments_df.dept_name, \"inner\").show()\n# +----+----------+---------+-------------+\n# |name|department|dept_name|     location|\n# +----+----------+---------+-------------+\n# |Jane|        IT|       IT|San Francisco|\n# |John|        HR|       HR|     New York|\n# +----+----------+---------+-------------+\n\n# Left Join: Keeps all employees, even those without a matching department\nemployees_df.join(departments_df, employees_df.department == departments_df.dept_name, \"left\").show()\n# +----+----------+---------+-------------+\n# |name|department|dept_name|     location|\n# +----+----------+---------+-------------+\n# |Jane|        IT|       IT|San Francisco|\n# |John|        HR|       HR|     New York|\n# | Tom|   Finance|     null|         null|\n# +----+----------+---------+-------------+`}),(0,e.jsx)(a.hr,{}),(0,e.jsxs)(a.h2,{className:\"content-header\",id:\"3-window-functions\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#3-window-functions\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"3. Window Functions\"]}),(0,e.jsxs)(a.p,{children:[(0,e.jsx)(a.strong,{children:\"Window functions\"}),\" are a game-changer for data analysis in PySpark. They allow you to perform calculations across a set of rows that are related to the current row, without collapsing the rows into a single result. This is perfect for tasks like calculating running totals, rankings, or moving averages.\"]}),(0,e.jsxs)(a.h3,{className:\"content-header\",id:\"defining-a-window\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#defining-a-window\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Defining a Window\"]}),(0,e.jsxs)(a.p,{children:[\"A window is defined using \",(0,e.jsx)(a.code,{children:\"Window.partitionBy()\"}),\" to group the data and \",(0,e.jsx)(a.code,{children:\"orderBy()\"}),\" to sort it within each group.\"]}),(0,e.jsx)(l,{lang:\"python\",children:`from pyspark.sql import Window\nfrom pyspark.sql.functions import rank, avg, sum\n\n# Create a sample DataFrame\ndata = [(\"A\", 1, 100), (\"A\", 2, 150), (\"A\", 3, 200),\n      (\"B\", 1, 50), (\"B\", 2, 75)]\ndf = spark.createDataFrame(data, [\"category\", \"month\", \"sales\"])\n\n# Define a window specification: Partition by category, order by month\nwindow_spec = Window.partitionBy(\"category\").orderBy(\"month\")`}),(0,e.jsxs)(a.h3,{className:\"content-header\",id:\"common-window-functions\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#common-window-functions\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Common Window Functions\"]}),(0,e.jsxs)(a.ul,{children:[(0,e.jsxs)(a.li,{children:[(0,e.jsx)(a.strong,{children:\"Ranking\"}),\": \",(0,e.jsx)(a.code,{children:\"row_number()\"}),\", \",(0,e.jsx)(a.code,{children:\"rank()\"}),\", and \",(0,e.jsx)(a.code,{children:\"dense_rank()\"}),\" assign a rank to each row within a partition.\"]}),(0,e.jsxs)(a.li,{children:[(0,e.jsx)(a.strong,{children:\"Aggregate\"}),\": \",(0,e.jsx)(a.code,{children:\"sum()\"}),\", \",(0,e.jsx)(a.code,{children:\"avg()\"}),\", \",(0,e.jsx)(a.code,{children:\"max()\"}),\", and \",(0,e.jsx)(a.code,{children:\"min()\"}),\" can be applied to a window.\"]})]}),(0,e.jsx)(l,{lang:\"python\",children:`# Add a running total of sales for each category\ndf_running_total = df.withColumn(\n  'running_total_sales',\n  sum('sales').over(window_spec)\n)\n\n# Show the result\ndf_running_total.show()\n# +--------+-----+-----+-------------------+\n# |category|month|sales|running_total_sales|\n# +--------+-----+-----+-------------------+\n# |       A|    1|  100|                100|\n# |       A|    2|  150|                250|\n# |       A|    3|  200|                450|\n# |       B|    1|   50|                 50|\n# |       B|    2|   75|                125|\n# +--------+-----+-----+-------------------+`}),(0,e.jsxs)(a.h3,{className:\"content-header\",id:\"calculating-a-moving-average\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#calculating-a-moving-average\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Calculating a Moving Average\"]}),(0,e.jsx)(a.p,{children:\"You can also specify a frame within a window to calculate a moving average. This example calculates the average of the current row and the two preceding rows.\"}),(0,e.jsx)(l,{lang:\"python\",children:`from pyspark.sql.functions import mean\n\n# Define a window for a 3-row moving average\nmoving_avg_window = Window.partitionBy(\"category\").orderBy(\"month\").rowsBetween(-2, 0)\n\ndf_moving_avg = df.withColumn(\n  'moving_avg_sales',\n  mean('sales').over(moving_avg_window)\n)\n\ndf_moving_avg.show()\n# +--------+-----+-----+----------------+\n# |category|month|sales|moving_avg_sales|\n# +--------+-----+-----+----------------+\n# |       A|    1|  100|           100.0|\n# |       A|    2|  150|           125.0|\n# |       A|    3|  200|           150.0|\n# |       B|    1|   50|            50.0|\n# |       B|    2|   75|            62.5|\n# +--------+-----+-----+----------------+`}),(0,e.jsx)(a.hr,{}),(0,e.jsxs)(a.h2,{className:\"content-header\",id:\"4-groupby-and-aggregations\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#4-groupby-and-aggregations\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"4. GroupBy and Aggregations\"]}),(0,e.jsxs)(a.p,{children:[\"The \",(0,e.jsx)(a.code,{children:\"groupBy()\"}),\" operation is essential for summarizing data. You can perform powerful aggregations like \",(0,e.jsx)(a.code,{children:\"sum()\"}),\", \",(0,e.jsx)(a.code,{children:\"count()\"}),\", \",(0,e.jsx)(a.code,{children:\"avg()\"}),\", \",(0,e.jsx)(a.code,{children:\"min()\"}),\", and \",(0,e.jsx)(a.code,{children:\"max()\"}),\" on grouped data.\"]}),(0,e.jsx)(l,{lang:\"python\",children:`from pyspark.sql.functions import sum, count\n\n# Group by category and calculate total sales\ndf.groupBy('category').agg(\n  sum('sales').alias('total_sales'),\n  count('month').alias('number_of_months')\n).show()\n\n# +--------+-----------+----------------+\n# |category|total_sales|number_of_months|\n# +--------+-----------+----------------+\n# |       A|        450|               3|\n# |       B|        125|               2|\n# +--------+-----------+----------------+`}),(0,e.jsx)(a.hr,{}),(0,e.jsxs)(a.h2,{className:\"content-header\",id:\"conclusion\",children:[(0,e.jsx)(a.a,{\"aria-hidden\":\"true\",href:\"#conclusion\",tabIndex:\"-1\",children:(0,e.jsx)(e.Fragment,{children:(0,e.jsx)(a.span,{className:\"content-header-link\",children:(0,e.jsxs)(a.svg,{className:\"h-5 linkicon w-5\",fill:\"currentColor\",viewBox:\"0 0 20 20\",xmlns:\"http://www.w3.org/2000/svg\",children:[(0,e.jsx)(a.path,{d:\"M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z\"}),(0,e.jsx)(a.path,{d:\"M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z\"})]})})})}),\"Conclusion\"]}),(0,e.jsx)(a.p,{children:\"Mastering these core PySpark operations is fundamental to becoming a proficient data engineer or data scientist. From the basic yet crucial steps of handling missing data to the advanced power of window functions, these techniques form the building blocks for creating robust and scalable data pipelines. By combining these methods, you can transform messy, raw data into clean, insightful information ready for analysis, machine learning, and informed decision-making. Keep practicing with real-world datasets, and you\\u2019ll soon find that PySpark is not just a tool, but a powerful ally in the world of big data.\"})]})}function h(n={}){let{wrapper:a}=n.components||{};return a?(0,e.jsx)(a,{...n,children:(0,e.jsx)(c,{...n})}):c(n)}function x(n,a){throw new Error(\"Expected \"+(a?\"component\":\"object\")+\" `\"+n+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return _(N);})();\n;return Component;"
+  },
+  "_id": "blog/anatomy-of-pyspark-2.mdx",
+  "_raw": {
+    "sourceFilePath": "blog/anatomy-of-pyspark-2.mdx",
+    "sourceFileName": "anatomy-of-pyspark-2.mdx",
+    "sourceFileDir": "blog",
+    "contentType": "mdx",
+    "flattenedPath": "blog/anatomy-of-pyspark-2"
+  },
+  "type": "Blog",
+  "readingTime": {
+    "text": "6 min read",
+    "minutes": 5.21,
+    "time": 312600,
+    "words": 1042
+  },
+  "slug": "anatomy-of-pyspark-2",
+  "path": "blog/anatomy-of-pyspark-2",
+  "filePath": "blog/anatomy-of-pyspark-2.mdx",
+  "toc": [
+    {
+      "value": "Introduction",
+      "url": "#introduction",
+      "depth": 2
+    },
+    {
+      "value": "1. Data Cleaning and Transformation",
+      "url": "#1-data-cleaning-and-transformation",
+      "depth": 2
+    },
+    {
+      "value": "Handling Missing Values",
+      "url": "#handling-missing-values",
+      "depth": 3
+    },
+    {
+      "value": "Dropping Rows",
+      "url": "#dropping-rows",
+      "depth": 4
+    },
+    {
+      "value": "Drop rows with any null value",
+      "url": "#drop-rows-with-any-null-value",
+      "depth": 1
+    },
+    {
+      "value": "Drop rows where 'price' column is null",
+      "url": "#drop-rows-where-price-column-is-null",
+      "depth": 1
+    },
+    {
+      "value": "Filling Nulls",
+      "url": "#filling-nulls",
+      "depth": 4
+    },
+    {
+      "value": "Fill nulls in specific columns with a dictionary",
+      "url": "#fill-nulls-in-specific-columns-with-a-dictionary",
+      "depth": 1
+    },
+    {
+      "value": "Renaming and Dropping Columns",
+      "url": "#renaming-and-dropping-columns",
+      "depth": 3
+    },
+    {
+      "value": "Drop a single column",
+      "url": "#drop-a-single-column",
+      "depth": 1
+    },
+    {
+      "value": "Drop multiple columns",
+      "url": "#drop-multiple-columns",
+      "depth": 1
+    },
+    {
+      "value": "2. Joins",
+      "url": "#2-joins",
+      "depth": 2
+    },
+    {
+      "value": "Example Setup",
+      "url": "#example-setup",
+      "depth": 3
+    },
+    {
+      "value": "Create DataFrames",
+      "url": "#create-dataframes",
+      "depth": 1
+    },
+    {
+      "value": "+----+----------+",
+      "url": "#--------------",
+      "depth": 1
+    },
+    {
+      "value": "|name|department|",
+      "url": "#namedepartment",
+      "depth": 1
+    },
+    {
+      "value": "+----+----------+",
+      "url": "#---------------1",
+      "depth": 1
+    },
+    {
+      "value": "|John|        HR|",
+      "url": "#john--------hr",
+      "depth": 1
+    },
+    {
+      "value": "|Jane|        IT|",
+      "url": "#jane--------it",
+      "depth": 1
+    },
+    {
+      "value": "| Tom|   Finance|",
+      "url": "#-tom---finance",
+      "depth": 1
+    },
+    {
+      "value": "+----+----------+",
+      "url": "#---------------2",
+      "depth": 1
+    },
+    {
+      "value": "+-------------+-------------+",
+      "url": "#--------------------------",
+      "depth": 1
+    },
+    {
+      "value": "|    dept_name|     location|",
+      "url": "#----dept_name-----location",
+      "depth": 1
+    },
+    {
+      "value": "+-------------+-------------+",
+      "url": "#---------------------------1",
+      "depth": 1
+    },
+    {
+      "value": "|           HR|     New York|",
+      "url": "#-----------hr-----new-york",
+      "depth": 1
+    },
+    {
+      "value": "|           IT|San Francisco|",
+      "url": "#-----------itsan-francisco",
+      "depth": 1
+    },
+    {
+      "value": "|        Sales|       London|",
+      "url": "#--------sales-------london",
+      "depth": 1
+    },
+    {
+      "value": "+-------------+-------------+`}",
+      "url": "#---------------------------2",
+      "depth": 1
+    },
+    {
+      "value": "Common Join Types",
+      "url": "#common-join-types",
+      "depth": 3
+    },
+    {
+      "value": "Left Join: Keeps all employees, even those without a matching department",
+      "url": "#left-join-keeps-all-employees-even-those-without-a-matching-department",
+      "depth": 1
+    },
+    {
+      "value": "+----+----------+---------+-------------+",
+      "url": "#------------------------------------",
+      "depth": 1
+    },
+    {
+      "value": "|name|department|dept_name|     location|",
+      "url": "#namedepartmentdept_name-----location",
+      "depth": 1
+    },
+    {
+      "value": "+----+----------+---------+-------------+",
+      "url": "#-------------------------------------1",
+      "depth": 1
+    },
+    {
+      "value": "|Jane|        IT|       IT|San Francisco|",
+      "url": "#jane--------it-------itsan-francisco",
+      "depth": 1
+    },
+    {
+      "value": "|John|        HR|       HR|     New York|",
+      "url": "#john--------hr-------hr-----new-york",
+      "depth": 1
+    },
+    {
+      "value": "| Tom|   Finance|     null|         null|",
+      "url": "#-tom---finance-----null---------null",
+      "depth": 1
+    },
+    {
+      "value": "+----+----------+---------+-------------+`}",
+      "url": "#-------------------------------------2",
+      "depth": 1
+    },
+    {
+      "value": "3. Window Functions",
+      "url": "#3-window-functions",
+      "depth": 2
+    },
+    {
+      "value": "Defining a Window",
+      "url": "#defining-a-window",
+      "depth": 3
+    },
+    {
+      "value": "Create a sample DataFrame",
+      "url": "#create-a-sample-dataframe",
+      "depth": 1
+    },
+    {
+      "value": "Define a window specification: Partition by category, order by month",
+      "url": "#define-a-window-specification-partition-by-category-order-by-month",
+      "depth": 1
+    },
+    {
+      "value": "Common Window Functions",
+      "url": "#common-window-functions",
+      "depth": 3
+    },
+    {
+      "value": "Show the result",
+      "url": "#show-the-result",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----+-----+-------------------+",
+      "url": "#-------------------------------------",
+      "depth": 1
+    },
+    {
+      "value": "|category|month|sales|running_total_sales|",
+      "url": "#categorymonthsalesrunning_total_sales",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----+-----+-------------------+",
+      "url": "#--------------------------------------1",
+      "depth": 1
+    },
+    {
+      "value": "|       A|    1|  100|                100|",
+      "url": "#-------a----1--100----------------100",
+      "depth": 1
+    },
+    {
+      "value": "|       A|    2|  150|                250|",
+      "url": "#-------a----2--150----------------250",
+      "depth": 1
+    },
+    {
+      "value": "|       A|    3|  200|                450|",
+      "url": "#-------a----3--200----------------450",
+      "depth": 1
+    },
+    {
+      "value": "|       B|    1|   50|                 50|",
+      "url": "#-------b----1---50-----------------50",
+      "depth": 1
+    },
+    {
+      "value": "|       B|    2|   75|                125|",
+      "url": "#-------b----2---75----------------125",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----+-----+-------------------+`}",
+      "url": "#--------------------------------------2",
+      "depth": 1
+    },
+    {
+      "value": "Calculating a Moving Average",
+      "url": "#calculating-a-moving-average",
+      "depth": 3
+    },
+    {
+      "value": "Define a window for a 3-row moving average",
+      "url": "#define-a-window-for-a-3-row-moving-average",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----+-----+----------------+",
+      "url": "#----------------------------------",
+      "depth": 1
+    },
+    {
+      "value": "|category|month|sales|moving_avg_sales|",
+      "url": "#categorymonthsalesmoving_avg_sales",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----+-----+----------------+",
+      "url": "#-----------------------------------1",
+      "depth": 1
+    },
+    {
+      "value": "|       A|    1|  100|           100.0|",
+      "url": "#-------a----1--100-----------1000",
+      "depth": 1
+    },
+    {
+      "value": "|       A|    2|  150|           125.0|",
+      "url": "#-------a----2--150-----------1250",
+      "depth": 1
+    },
+    {
+      "value": "|       A|    3|  200|           150.0|",
+      "url": "#-------a----3--200-----------1500",
+      "depth": 1
+    },
+    {
+      "value": "|       B|    1|   50|            50.0|",
+      "url": "#-------b----1---50------------500",
+      "depth": 1
+    },
+    {
+      "value": "|       B|    2|   75|            62.5|",
+      "url": "#-------b----2---75------------625",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----+-----+----------------+`}",
+      "url": "#-----------------------------------2",
+      "depth": 1
+    },
+    {
+      "value": "4. GroupBy and Aggregations",
+      "url": "#4-groupby-and-aggregations",
+      "depth": 2
+    },
+    {
+      "value": "Group by category and calculate total sales",
+      "url": "#group-by-category-and-calculate-total-sales",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----------+----------------+",
+      "url": "#-----------------------------------",
+      "depth": 1
+    },
+    {
+      "value": "|category|total_sales|number_of_months|",
+      "url": "#categorytotal_salesnumber_of_months",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----------+----------------+",
+      "url": "#------------------------------------1",
+      "depth": 1
+    },
+    {
+      "value": "|       A|        450|               3|",
+      "url": "#-------a--------450---------------3",
+      "depth": 1
+    },
+    {
+      "value": "|       B|        125|               2|",
+      "url": "#-------b--------125---------------2",
+      "depth": 1
+    },
+    {
+      "value": "+--------+-----------+----------------+`}",
+      "url": "#------------------------------------2",
+      "depth": 1
+    },
+    {
+      "value": "Conclusion",
+      "url": "#conclusion",
+      "depth": 2
+    }
+  ],
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Common PySpark Operations for Data Wrangling",
+    "datePublished": "2023-11-15T00:00:00.000Z",
+    "dateModified": "2023-11-15T00:00:00.000Z",
+    "description": "This guide covers essential PySpark operations for data cleaning, transformation, and analysis. Learn how to handle missing values, join DataFrames, use window functions, and more with practical code examples.",
+    "image": "",
+    "url": "https://mk-hasan.com/blog/anatomy-of-pyspark-2"
+  }
+}

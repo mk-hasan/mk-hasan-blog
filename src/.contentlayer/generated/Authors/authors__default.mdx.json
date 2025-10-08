@@ -1,0 +1,32 @@
+{
+  "name": "Kamrul Hasan",
+  "avatar": "/static/images/avatar.png",
+  "occupation": "Lead Data Platform Engineer",
+  "email": "hasan.alive@gmail.com",
+  "twitter": "https://twitter.com/Twitter",
+  "linkedin": "https://www.linkedin.com",
+  "github": "https://github.com/mk-hasan",
+  "body": {
+    "raw": "\nI’m Md Kamrul Hasan, a Data Platform Lead and Data Engineer based in Berlin with a strong background in data engineering, agentic ai, machine learning, deep learning and cloud-based platforms. Over the past Nine years, I’ve designed and scaled Data, AI & ML platforms, built robust ETL pipelines, and developed GenAI-powered data products across industries ranging from digital services to healthcare.\n\nWith hands-on expertise in Python, Java, Golang, C++, JS and SQL, as well as cloud platforms like AWS, GCP, Azure and Databricks, I specialize in creating scalable solutions that bridge the gap between data and business needs. My work spans data architecture, MLOps/DataOps, real-time analytics, and AI/GenAi-driven applications.\n\nI hold a Master’s in Computer Science from Technical University Berlin, where I studied and researched robotics, big data, machine learning and deep learning and my master thesis was in incremental/continous/lifelong learning. My career is driven by curiosity, problem-solving, and the mission to turn complex data challenges into actionable insights.\n\nOutside of work, I’m passionate about learning emerging technologies, experimenting with agentic AI systems, and mentoring others in the data community. I also play Video games mostly multiplayer online FPS and FIFA!",
+    "code": "var Component=(()=>{var g=Object.create;var s=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var h=Object.getOwnPropertyNames;var u=Object.getPrototypeOf,b=Object.prototype.hasOwnProperty;var w=(a,e)=>()=>(e||a((e={exports:{}}).exports,e),e.exports),y=(a,e)=>{for(var t in e)s(a,t,{get:e[t],enumerable:!0})},o=(a,e,t,r)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let i of h(e))!b.call(a,i)&&i!==t&&s(a,i,{get:()=>e[i],enumerable:!(r=p(e,i))||r.enumerable});return a};var f=(a,e,t)=>(t=a!=null?g(u(a)):{},o(e||!a||!a.__esModule?s(t,\"default\",{value:a,enumerable:!0}):t,a)),v=a=>o(s({},\"__esModule\",{value:!0}),a);var d=w((k,l)=>{l.exports=_jsx_runtime});var I={};y(I,{default:()=>m,frontmatter:()=>x});var n=f(d()),x={name:\"Kamrul Hasan\",avatar:\"/static/images/avatar.png\",occupation:\"Lead Data Platform Engineer\",email:\"hasan.alive@gmail.com\",twitter:\"https://twitter.com/Twitter\",linkedin:\"https://www.linkedin.com\",github:\"https://github.com/mk-hasan\"};function c(a){let e={p:\"p\",...a.components};return(0,n.jsxs)(n.Fragment,{children:[(0,n.jsx)(e.p,{children:\"I\\u2019m Md Kamrul Hasan, a Data Platform Lead and Data Engineer based in Berlin with a strong background in data engineering, agentic ai, machine learning, deep learning and cloud-based platforms. Over the past Nine years, I\\u2019ve designed and scaled Data, AI & ML platforms, built robust ETL pipelines, and developed GenAI-powered data products across industries ranging from digital services to healthcare.\"}),(0,n.jsx)(e.p,{children:\"With hands-on expertise in Python, Java, Golang, C++, JS and SQL, as well as cloud platforms like AWS, GCP, Azure and Databricks, I specialize in creating scalable solutions that bridge the gap between data and business needs. My work spans data architecture, MLOps/DataOps, real-time analytics, and AI/GenAi-driven applications.\"}),(0,n.jsx)(e.p,{children:\"I hold a Master\\u2019s in Computer Science from Technical University Berlin, where I studied and researched robotics, big data, machine learning and deep learning and my master thesis was in incremental/continous/lifelong learning. My career is driven by curiosity, problem-solving, and the mission to turn complex data challenges into actionable insights.\"}),(0,n.jsx)(e.p,{children:\"Outside of work, I\\u2019m passionate about learning emerging technologies, experimenting with agentic AI systems, and mentoring others in the data community. I also play Video games mostly multiplayer online FPS and FIFA!\"})]})}function m(a={}){let{wrapper:e}=a.components||{};return e?(0,n.jsx)(e,{...a,children:(0,n.jsx)(c,{...a})}):c(a)}return v(I);})();\n;return Component;"
+  },
+  "_id": "authors/default.mdx",
+  "_raw": {
+    "sourceFilePath": "authors/default.mdx",
+    "sourceFileName": "default.mdx",
+    "sourceFileDir": "authors",
+    "contentType": "mdx",
+    "flattenedPath": "authors/default"
+  },
+  "type": "Authors",
+  "readingTime": {
+    "text": "1 min read",
+    "minutes": 0.955,
+    "time": 57300,
+    "words": 191
+  },
+  "slug": "default",
+  "path": "authors/default",
+  "filePath": "authors/default.mdx",
+  "toc": []
+}

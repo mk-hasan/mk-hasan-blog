@@ -1,0 +1,252 @@
+---
+title: "Anatomy of Semi-Structured (JSON) Data with PySpark"
+date: "2020-10-25"
+lastmod: "2020-10-25"
+tags: ["pyspark", "json", "data-types", "data-engineering"]
+draft: false
+summary: "This guide explores how to handle semi-structured JSON data using PySpark. It details Spark's complex data types—Array, Struct, and Map—and demonstrates how to parse, access, and flatten nested JSON records for efficient data transformation."
+images: [""]
+---
+
+## Introduction
+
+This guide explores the fundamental concepts of handling **semi-structured data** like JSON within a PySpark environment. We'll delve into the various complex data types Spark uses to represent JSON and demonstrate how to parse, access, and flatten nested data structures for effective data analysis and transformation.
+
+---
+
+## Data Types in Spark
+
+Before parsing JSON, it's crucial to understand how Spark represents its data. JSON data often contains complex, nested structures. The three most common complex data types in Spark for handling this are **Array**, **Struct**, and **Map**.
+
+---
+
+### Array
+
+An **Array** in Spark is a list of homogenous elements, meaning all elements in the array must have the same data type.
+
+Example JSON:
+
+<CodeBlock lang="json">
+{`{
+  "numbers": [1, 2, 3, 4, 5, 6]
+}`}
+</CodeBlock>
+
+Read JSON into a Spark DataFrame:
+
+<CodeBlock lang="python">
+{`input_json = """
+{
+  "numbers": [1, 2, 3, 4, 5, 6]
+}
+"""
+adf = spark.read.json(sc.parallelize([input_json]))
+adf.printSchema()`}
+</CodeBlock>
+
+**Output:**
+```text
+root
+|-- numbers: array (nullable = true)
+| |-- element: long (containsNull = true)
+```
+
+Show the data:
+
+<CodeBlock lang="python">
+{`adf.show(truncate=False)`}
+</CodeBlock>
+
+**Output:**
+```text
++------------------+
+|numbers |
++------------------+
+|[1, 2, 3, 4, 5, 6]|
++------------------+
+```
+
+Flatten the array using `explode`:
+
+<CodeBlock lang="python">
+{`from pyspark.sql.functions import explode
+adf.select(explode("numbers").alias("number")).show()`}
+</CodeBlock>
+
+**Output:**
+```text
++------+
+|number|
++------+
+| 1|
+| 2|
+| 3|
+| 4|
+| 5|
+| 6|
++------+
+```
+---
+
+### Struct
+
+A **Struct** is a grouped list of variables (like a record) where elements can have **different data types**. Access fields using dot notation.
+
+Example JSON:
+
+<CodeBlock lang="json">
+{`{
+  "car_details": {
+    "model": "Tesla S",
+    "year": 2018
+  }
+}`}
+</CodeBlock>
+
+Read into Spark:
+
+<CodeBlock lang="python">
+{`input_json = """
+{
+  "car_details": {
+     "model": "Tesla S",
+     "year": 2018
+  }
+}
+"""
+sdf = spark.read.json(sc.parallelize([input_json]))
+sdf.printSchema()`}
+</CodeBlock>
+
+**Output:**
+```text
+root
+|-- car_details: struct (nullable = true)
+| |-- model: string (nullable = true)
+| |-- year: long (nullable = true)
+```
+Accessing fields:
+
+<CodeBlock lang="python">
+{`# Using dot notation
+sdf.select(sdf.car_details.model, sdf.car_details.year).show()`}
+</CodeBlock>
+
+**Output:**
+```text
++-----------------+----------------+
+|car_details.model|car_details.year|
++-----------------+----------------+
+| Tesla S| 2018|
++-----------------+----------------+
+```
+Or with `col`:
+
+<CodeBlock lang="python">
+{`from pyspark.sql.functions import col
+sdf.select(col("car_details.model"), col("car_details.year")).show()`}
+</CodeBlock>
+
+**Output:**
+```text
++-------+----+
+| model|year|
++-------+----+
+|Tesla S|2018|
++-------+----+
+```
+
+---
+
+### Map
+
+A **Map** is a collection of key-value pairs (like a Python dictionary).
+
+Example JSON:
+
+<CodeBlock lang="json">
+{`{
+  "Car": {
+    "model_id": 835,
+    "year": 2008
+  }
+}`}
+</CodeBlock>
+
+Read with schema:
+
+<CodeBlock lang="python">
+{`from pyspark.sql.types import StructType, MapType, StringType, IntegerType
+
+input_json = """
+{
+  "Car": {
+    "model_id": 835,
+    "year": 2008
+  }
+}
+"""
+
+schema = StructType().add("Car", MapType(StringType(), IntegerType()))
+mdf = spark.read.json(sc.parallelize([input_json]), schema=schema)
+mdf.printSchema()`}
+</CodeBlock>
+
+**Output:**
+```text
+root
+|-- Car: map (nullable = true)
+| |-- key: string
+| |-- value: integer (valueContainsNull = true)
+```
+
+Access elements by key:
+
+<CodeBlock lang="python">
+{`mdf.select(mdf.Car["model_id"], mdf.Car["year"]).show()`}
+</CodeBlock>
+
+**Output:**
+```text
++-------------+---------+
+|Car[model_id]|Car[year]|
++-------------+---------+
+| 835| 2008|
++-------------+---------+
+```
+---
+
+## Reading JSON Records
+
+Spark accepts JSON data in the **JSON Lines format**, where each line is a separate, self-contained JSON record.
+
+Example file:
+
+<CodeBlock lang="json">
+{`{"id" : "1201", "name" : "satish", "age" : "25"}
+{"id" : "1202", "name" : "krishna", "age" : "28"}`}
+</CodeBlock>
+
+Read into Spark:
+
+<CodeBlock lang="python">
+{`df = spark.read.json(path, multiLine="false")`}
+</CodeBlock>
+
+Inspect schema for nested structures (food ordering example):
+```text
+root
+|-- customerId: string (nullable = true)
+|-- orders: array (nullable = true)
+| |-- element: struct (containsNull = true)
+| | |-- basket: array (nullable = true)
+| | | |-- element: struct (containsNull = true)
+| | | | |-- grossMerchandiseValueEur: double (nullable = true)
+| | | | |-- productId: string (nullable = true)
+| | | | |-- productType: string (nullable = true)
+| | |-- orderId: string (nullable = true)
+```
+
+<Callout type="info">
+In a real-world scenario, you would use the knowledge of **Array**, **Struct**, and **Map** types to **parse and flatten** this complex nested structure for further processing and analysis.
+</Callout>
