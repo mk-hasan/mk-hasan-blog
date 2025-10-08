@@ -4,9 +4,5 @@
   command = "next build"      # build command
   publish = ".next"           # output folder (plugin will serve this)
 
-
-[build.environment]
-  NODE_VERSION = "20.17.0"    # Fix esbuild + contentlayer issue
-  
 [[plugins]]
 package = "@netlify/plugin-nextjs"
