@@ -18,22 +18,27 @@ export default async function Page() {
             Tags
           </h1>
         </div>
-        <div className="flex max-w-lg flex-wrap">
+        <div className="w-full">
           {tagKeys.length === 0 && 'No tags found.'}
-          {sortedTags.map((t) => {
-            return (
-              <div key={t} className="mt-2 mr-5 mb-2">
-                <Tag text={t} />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {sortedTags.map((t) => {
+              return (
                 <Link
+                  key={t}
                   href={`/tags/${slug(t)}`}
-                  className="-ml-2 text-sm font-semibold text-gray-600 uppercase dark:text-gray-300"
+                  className="group flex items-center justify-between rounded-lg border border-gray-200/70 p-3 transition hover:shadow-sm dark:border-gray-800/60"
                   aria-label={`View posts tagged ${t}`}
                 >
-                  {` (${tagCounts[t]})`}
+                  <span className="flex items-center gap-2">
+                    <Tag text={t} />
+                  </span>
+                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                    {tagCounts[t]}
+                  </span>
                 </Link>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       </div>
     </>

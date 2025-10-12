@@ -1,12 +1,21 @@
+'use client'
+
 import Image from './Image'
 import Link from './Link'
+import { motion } from 'framer-motion'
 
 const Card = ({ title, description, imgSrc, href }) => (
-  <div className="md max-w-[544px] p-4 md:w-1/2">
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: '-80px' }}
+    transition={{ duration: 0.35, ease: 'easeOut' }}
+    className="md max-w-[544px] p-4 md:w-1/2"
+  >
     <div
       className={`${
         imgSrc && 'h-full'
-      } overflow-hidden rounded-md border-2 border-gray-200/60 dark:border-gray-700/60`}
+      } overflow-hidden rounded-md border-2 border-gray-200/60 dark:border-gray-700/60 transition hover:shadow-md`}
     >
       {imgSrc &&
         (href ? (
@@ -50,7 +59,7 @@ const Card = ({ title, description, imgSrc, href }) => (
         )}
       </div>
     </div>
-  </div>
+  </motion.div>
 )
 
 export default Card

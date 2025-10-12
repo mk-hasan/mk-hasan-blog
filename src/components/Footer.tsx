@@ -25,11 +25,15 @@ export default function Footer() {
           <div>{`© ${new Date().getFullYear()}`}</div>
           <div>{` • `}</div>
           <Link href="/">{siteMetadata.title}</Link>
+          <div>{` • `}</div>
+          <Link href="/feed.xml" className="hover:text-primary-600 dark:hover:text-primary-400">RSS</Link>
         </div>
         <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
-          <Link href="">
-            {/* Learn Data with Mk */}
-          </Link>
+          <span>
+            Built with <Link href="https://nextjs.org" className="hover:text-primary-600 dark:hover:text-primary-400">Next.js</Link>
+            {` • `}
+            Deployed on <Link href="https://www.netlify.com" className="hover:text-primary-600 dark:hover:text-primary-400">Netlify</Link>
+          </span>
         </div>
       </div>
     </footer>

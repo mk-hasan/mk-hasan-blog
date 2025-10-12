@@ -1,8 +1,12 @@
+'use client'
+
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from 'pliny/utils/formatDate'
 import NewsletterForm from 'pliny/ui/NewsletterForm'
+import { motion } from 'framer-motion'
+import { calculateReadingTime, formatReadingTime } from '../utils/readingTime'
 
 const MAX_DISPLAY = 5
 
@@ -12,26 +16,30 @@ export default function Home({ posts }) {
 
 
     {/* Hero Section */}
-    <section className="flex flex-col md:flex-row items-center justify-between mb-12 p-8 rounded-xl bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+    <motion.section
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="flex flex-col md:flex-row items-center justify-between mb-12 p-8 rounded-2xl bg-gradient-to-br from-primary-50 via-fuchsia-50 to-rose-50 dark:from-gray-900 dark:via-gray-850 dark:to-gray-800 border border-gray-100/70 dark:border-gray-800/60"
+    >
       <div className="flex-1">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
-          Hi, I’m Kamrul Hasan — Lead Data Platform Engineer & AI Consultant
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
+          Kamrul Hasan — Data Platform Lead & AI Consultant
         </h1>
-        <p className="text-xl text-gray-700 dark:text-gray-300 mb-6">
-          I help organizations design scalable data platforms and deliver solutions across Data Engineering, AI, ML, and Web Applications. 
-          With expertise in governance and strategy, I enable businesses to unlock the full potential of their data for smarter decision-making and growth.
+        <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-6 max-w-2xl">
+          I architect scalable data platforms and deliver practical AI solutions. From data ingestion to intelligent applications, I help teams move faster with clarity, reliability, and impact.
         </p>
 
         <div className="flex gap-4">
           <a
             href="/projects"
-            className="px-6 py-3 bg-primary-500 text-white rounded-lg font-semibold shadow hover:bg-primary-600 transition"
+            className="px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold shadow hover:bg-primary-700 transition"
           >
             View My Portfolio
           </a>
           <a
             href="/blog"
-            className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-semibold shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+            className="px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-semibold shadow hover:bg-gray-300 dark:hover:bg-gray-700 transition"
           >
             Read My Blog
           </a>
@@ -44,24 +52,22 @@ export default function Home({ posts }) {
           className="w-40 h-40 rounded-full border-4 border-primary-500 shadow-lg object-cover"
         />
       </div> */}
-    </section>
+    </motion.section>
 
     {/* About Me & Services Side by Side */}
     <section className="mb-12 flex flex-col md:flex-row gap-8">
       {/* About Me Section */}
-      <div className="flex-1 p-8 rounded-xl bg-gray-100 dark:bg-gray-800 flex flex-col items-center md:items-start">
+      <div className="flex-1 p-8 rounded-xl bg-gray-100 dark:bg-gray-900/60 border border-gray-200/70 dark:border-gray-800/60 flex flex-col items-center md:items-start">
         <img
           src="/static/images/avatar.png"
           alt="Kamrul Hasan"
-          className="w-32 h-32 rounded-full mb-6 border-2 border-primary-500 object-cover"
+          className="w-32 h-32 rounded-full mb-6 border-2 border-primary-600 object-cover"
         />
         <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">
           About Me
         </h2>
         <p className="text-lg text-gray-700 dark:text-gray-300 mb-2">
-          I’m Kamrul Hasan, a Data Platform Lead with deep experience in Data Engineering, Science, and AI. 
-          Over the years, I’ve led teams in building end-to-end solutions that make data accessible, reliable, and impactful. 
-          I’m passionate about transforming raw data into innovation and love working with forward-thinking organizations.
+          Data Platform Lead with deep experience in data engineering, MLOps, and AI. I build trustworthy data foundations and mentor teams to deliver end-to-end outcomes.
         </p>
         <a
           href="/about"
@@ -72,7 +78,7 @@ export default function Home({ posts }) {
       </div>
 
       {/* Services Section */}
-      <div className="flex-1 p-8 rounded-xl bg-white dark:bg-gray-900 shadow flex flex-col">
+      <div className="flex-1 p-8 rounded-xl bg-white dark:bg-gray-900/60 border border-gray-200/70 dark:border-gray-800/60 shadow-sm flex flex-col">
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
           What I Do
         </h2>
@@ -104,7 +110,7 @@ export default function Home({ posts }) {
         </div>
         <a
           href="/contact"
-          className="self-start px-6 py-3 bg-primary-500 text-white rounded-lg font-semibold shadow hover:bg-primary-600 transition"
+          className="self-start px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold shadow hover:bg-primary-700 transition"
         >
           Work With Me
         </a>
@@ -123,7 +129,8 @@ export default function Home({ posts }) {
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((post) => {
-            const { slug, date, title, summary, tags } = post
+            const { slug, date, title, summary, tags, body } = post
+            const readingTime = formatReadingTime(calculateReadingTime(body?.raw || summary || ''))
             return (
               <li key={slug} className="py-12">
                 <article>
@@ -132,6 +139,8 @@ export default function Home({ posts }) {
                       <dt className="sr-only">Published on</dt>
                       <dd className="text-base leading-6 font-medium text-gray-500 dark:text-gray-400">
                         <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
+                        <span className="mx-2">•</span>
+                        <span>{readingTime}</span>
                       </dd>
                     </dl>
                     <div className="space-y-5 xl:col-span-3">

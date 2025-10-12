@@ -1,13 +1,13 @@
 {
+  "pyspark": 2,
+  "data-wrangling": 1,
+  "data-engineering": 2,
+  "dataframes": 1,
+  "json": 1,
+  "data-types": 1,
   "machine-learning": 2,
   "clustering": 2,
   "adjusted-rand-index": 2,
-  "pyspark": 2,
-  "json": 1,
-  "data-types": 1,
-  "data-engineering": 2,
-  "data-wrangling": 1,
-  "dataframes": 1,
   "go": 1,
   "golang": 1
 }
