@@ -4,6 +4,14 @@ import { FormEvent, useState } from 'react'
 
 type SubmitStatus = 'idle' | 'pending' | 'success' | 'error'
 
+function encodeFormData(formData: FormData): string {
+  const params = new URLSearchParams()
+  formData.forEach((value, key) => {
+    params.append(key, typeof value === 'string' ? value : value.name)
+  })
+  return params.toString()
+}
+
 export default function ContactForm() {
   const [status, setStatus] = useState<SubmitStatus>('idle')
 
@@ -16,7 +24,7 @@ export default function ContactForm() {
       const response = await fetch('/__forms.html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(Object.fromEntries(formData.entries())).toString(),
+        body: encodeFormData(formData),
       })
 
       if (!response.ok) {
