@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Mk Hasan Blog</title>
+      <link>https://mk-hasan.com/blog</link>
+      <description>A blog about programming, data and web development.</description>
+      <language>en-us</language>
+      <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
+      <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
+      <lastBuildDate>Sun, 14 Jun 2026 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mk-hasan.com/tags/routing/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mk-hasan.com/blog/agentic-ai-overview-3</guid>
+    <title>Agentic AI Design Patterns — Part 3: Foundation &amp; Workflow Patterns</title>
+    <link>https://mk-hasan.com/blog/agentic-ai-overview-3</link>
+    <description>Part 3 covers patterns 01–06 — ReAct, Tool Use, Planning, Prompt Chaining, Routing, and Parallelization — with LangGraph flow diagrams and runnable commands for each.</description>
+    <pubDate>Sun, 14 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>react-agent</category><category>langgraph</category><category>routing</category><category>planning</category><category>design-patterns</category>
+  </item>
+
+    </channel>
+  </rss>

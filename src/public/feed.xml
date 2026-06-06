@@ -7,9 +7,49 @@
       <language>en-us</language>
       <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
       <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
-      <lastBuildDate>Sat, 06 Jun 2026 00:00:00 GMT</lastBuildDate>
+      <lastBuildDate>Tue, 16 Jun 2026 00:00:00 GMT</lastBuildDate>
       <atom:link href="https://mk-hasan.com/feed.xml" rel="self" type="application/rss+xml"/>
       
+  <item>
+    <guid>https://mk-hasan.com/blog/agentic-ai-overview-4</guid>
+    <title>Agentic AI Design Patterns — Part 4: Control, Multi-Agent &amp; Production</title>
+    <link>https://mk-hasan.com/blog/agentic-ai-overview-4</link>
+    <description>Part 4 covers patterns 07–15 — orchestration, safety, memory, RAG, and event-driven agents — plus how to move from runnable examples to production architecture.</description>
+    <pubDate>Tue, 16 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>human-in-the-loop</category><category>rag</category><category>multi-agent</category><category>production</category><category>langgraph</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/agentic-ai-overview-3</guid>
+    <title>Agentic AI Design Patterns — Part 3: Foundation &amp; Workflow Patterns</title>
+    <link>https://mk-hasan.com/blog/agentic-ai-overview-3</link>
+    <description>Part 3 covers patterns 01–06 — ReAct, Tool Use, Planning, Prompt Chaining, Routing, and Parallelization — with LangGraph flow diagrams and runnable commands for each.</description>
+    <pubDate>Sun, 14 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>react-agent</category><category>langgraph</category><category>routing</category><category>planning</category><category>design-patterns</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/agentic-ai-overview-2</guid>
+    <title>Agentic AI Design Patterns — Part 2: Scenarios &amp; Shared Runtime</title>
+    <link>https://mk-hasan.com/blog/agentic-ai-overview-2</link>
+    <description>Part 2 explains the three shared scenarios (IT helpdesk, e-commerce, ML pipeline) and the shared runtime that lets every pattern example run with the same CLI, tools, and LangGraph helpers.</description>
+    <pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>agentic-ai</category><category>langgraph</category><category>mcp</category><category>python</category><category>design-patterns</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/agentic-ai-overview-1</guid>
+    <title>Agentic AI Design Patterns — Part 1: The Catalog &amp; Learning Path</title>
+    <link>https://mk-hasan.com/blog/agentic-ai-overview-1</link>
+    <description>Part 1 introduces agentic-ai-overview — a hands-on catalog of 15 LangGraph design patterns with three shared scenarios, and explains how to learn agentic AI by comparing patterns on the same domain.</description>
+    <pubDate>Wed, 10 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>agentic-ai</category><category>design-patterns</category><category>langgraph</category><category>python</category><category>llm</category>
+  </item>
+
   <item>
     <guid>https://mk-hasan.com/blog/social-multi-agent-4</guid>
     <title>Building a Social Multi-Agent System — Part 4: Architecture, Memory &amp; Operations</title>

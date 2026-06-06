@@ -8,7 +8,7 @@
       <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
       <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
       <lastBuildDate>Tue, 16 Jun 2026 00:00:00 GMT</lastBuildDate>
-      <atom:link href="https://mk-hasan.com/tags/multi-agent/feed.xml" rel="self" type="application/rss+xml"/>
+      <atom:link href="https://mk-hasan.com/tags/human-in-the-loop/feed.xml" rel="self" type="application/rss+xml"/>
       
   <item>
     <guid>https://mk-hasan.com/blog/agentic-ai-overview-4</guid>
@@ -18,16 +18,6 @@
     <pubDate>Tue, 16 Jun 2026 00:00:00 GMT</pubDate>
     <author>hasan.alive@gmail.com (Mk Hasan)</author>
     <category>human-in-the-loop</category><category>rag</category><category>multi-agent</category><category>production</category><category>langgraph</category>
-  </item>
-
-  <item>
-    <guid>https://mk-hasan.com/blog/social-multi-agent-1</guid>
-    <title>Building a Social Multi-Agent System — Part 1: The Big Picture</title>
-    <link>https://mk-hasan.com/blog/social-multi-agent-1</link>
-    <description>Part 1 introduces a LangGraph-powered social feed where AI agents compose posts, validate them, publish to a real API, and simulate engagement — and explains why I built it.</description>
-    <pubDate>Mon, 01 Jun 2026 00:00:00 GMT</pubDate>
-    <author>hasan.alive@gmail.com (Mk Hasan)</author>
-    <category>ai-agents</category><category>langgraph</category><category>multi-agent</category><category>llm</category><category>python</category>
   </item>
 
     </channel>

@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Mk Hasan Blog</title>
+      <link>https://mk-hasan.com/blog</link>
+      <description>A blog about programming, data and web development.</description>
+      <language>en-us</language>
+      <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
+      <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
+      <lastBuildDate>Fri, 12 Jun 2026 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mk-hasan.com/tags/mcp/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mk-hasan.com/blog/agentic-ai-overview-2</guid>
+    <title>Agentic AI Design Patterns — Part 2: Scenarios &amp; Shared Runtime</title>
+    <link>https://mk-hasan.com/blog/agentic-ai-overview-2</link>
+    <description>Part 2 explains the three shared scenarios (IT helpdesk, e-commerce, ML pipeline) and the shared runtime that lets every pattern example run with the same CLI, tools, and LangGraph helpers.</description>
+    <pubDate>Fri, 12 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>agentic-ai</category><category>langgraph</category><category>mcp</category><category>python</category><category>design-patterns</category>
+  </item>
+
+    </channel>
+  </rss>
