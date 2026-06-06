@@ -9,7 +9,7 @@ import Image from '@/components/Image'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
-import { calculateReadingTime, formatReadingTime } from '../utils/readingTime'
+import { getReadingTimeLabel } from '../utils/readingTime'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const discussUrl = (path) =>
@@ -31,9 +31,9 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { filePath, path, slug, date, title, tags, body } = content
+  const { filePath, path, slug, date, title, tags } = content
   const basePath = path.split('/')[0]
-  const readingTime = formatReadingTime(calculateReadingTime(body?.raw || ''))
+  const readingTime = getReadingTimeLabel(content)
 
   return (
     <SectionContainer>

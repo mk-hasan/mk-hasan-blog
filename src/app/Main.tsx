@@ -6,7 +6,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from 'pliny/utils/formatDate'
 import NewsletterForm from 'pliny/ui/NewsletterForm'
 import { motion } from 'framer-motion'
-import { calculateReadingTime, formatReadingTime } from '../utils/readingTime'
+import { getReadingTimeLabel } from '../utils/readingTime'
 
 const MAX_DISPLAY = 5
 
@@ -129,8 +129,8 @@ export default function Home({ posts }) {
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((post) => {
-            const { slug, date, title, summary, tags, body } = post
-            const readingTime = formatReadingTime(calculateReadingTime(body?.raw || summary || ''))
+            const { slug, date, title, summary, tags } = post
+            const readingTime = getReadingTimeLabel(post)
             return (
               <li key={slug} className="py-12">
                 <article>

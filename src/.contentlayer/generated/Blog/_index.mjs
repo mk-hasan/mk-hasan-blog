@@ -4,5 +4,9 @@ import blog__adjustedRandIndexMdx from './blog__adjusted-rand-index.mdx.json' wi
 import blog__anatomyOfPyspark_1Mdx from './blog__anatomy-of-pyspark-1.mdx.json' with { type: 'json' }
 import blog__anatomyOfPyspark_2Mdx from './blog__anatomy-of-pyspark-2.mdx.json' with { type: 'json' }
 import blog__mlWithGolangMdx from './blog__ml-with-golang.mdx.json' with { type: 'json' }
+import blog__socialMultiAgent_1Mdx from './blog__social-multi-agent-1.mdx.json' with { type: 'json' }
+import blog__socialMultiAgent_2Mdx from './blog__social-multi-agent-2.mdx.json' with { type: 'json' }
+import blog__socialMultiAgent_3Mdx from './blog__social-multi-agent-3.mdx.json' with { type: 'json' }
+import blog__socialMultiAgent_4Mdx from './blog__social-multi-agent-4.mdx.json' with { type: 'json' }
 
-export const allBlogs = [blog__adjustedRandIndexMdx, blog__anatomyOfPyspark_1Mdx, blog__anatomyOfPyspark_2Mdx, blog__mlWithGolangMdx]
+export const allBlogs = [blog__adjustedRandIndexMdx, blog__anatomyOfPyspark_1Mdx, blog__anatomyOfPyspark_2Mdx, blog__mlWithGolangMdx, blog__socialMultiAgent_1Mdx, blog__socialMultiAgent_2Mdx, blog__socialMultiAgent_3Mdx, blog__socialMultiAgent_4Mdx]

@@ -12,3 +12,16 @@ export function formatReadingTime(minutes: number): string {
   }
   return `${minutes} min read`
 }
+
+type ReadingTimeSource = {
+  readingTime?: { text?: string } | null
+  summary?: string | null
+}
+
+/** CoreContent posts omit body; prefer contentlayer's readingTime, fall back to summary. */
+export function getReadingTimeLabel(post: ReadingTimeSource): string {
+  if (post.readingTime?.text) {
+    return post.readingTime.text
+  }
+  return formatReadingTime(calculateReadingTime(post.summary || ''))
+}

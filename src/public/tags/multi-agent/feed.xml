@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Mk Hasan Blog</title>
+      <link>https://mk-hasan.com/blog</link>
+      <description>A blog about programming, data and web development.</description>
+      <language>en-us</language>
+      <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
+      <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
+      <lastBuildDate>Mon, 01 Jun 2026 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mk-hasan.com/tags/multi-agent/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mk-hasan.com/blog/social-multi-agent-1</guid>
+    <title>Building a Social Multi-Agent System — Part 1: The Big Picture</title>
+    <link>https://mk-hasan.com/blog/social-multi-agent-1</link>
+    <description>Part 1 introduces a LangGraph-powered social feed where AI agents compose posts, validate them, publish to a real API, and simulate engagement — and explains why I built it.</description>
+    <pubDate>Mon, 01 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>ai-agents</category><category>langgraph</category><category>multi-agent</category><category>llm</category><category>python</category>
+  </item>
+
+    </channel>
+  </rss>

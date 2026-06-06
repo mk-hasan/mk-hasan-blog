@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Mk Hasan Blog</title>
+      <link>https://mk-hasan.com/blog</link>
+      <description>A blog about programming, data and web development.</description>
+      <language>en-us</language>
+      <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
+      <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
+      <lastBuildDate>Sun, 25 Oct 2020 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mk-hasan.com/tags/json/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mk-hasan.com/blog/anatomy-of-pyspark-1</guid>
+    <title>Anatomy of Semi-Structured (JSON) Data with PySpark</title>
+    <link>https://mk-hasan.com/blog/anatomy-of-pyspark-1</link>
+    <description>This guide explores how to handle semi-structured JSON data using PySpark. It details Spark&#39;s complex data types—Array, Struct, and Map—and demonstrates how to parse, access, and flatten nested JSON records for efficient data transformation.</description>
+    <pubDate>Sun, 25 Oct 2020 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>pyspark</category><category>json</category><category>data-types</category><category>data-engineering</category>
+  </item>
+
+    </channel>
+  </rss>

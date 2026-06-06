@@ -1,0 +1,94 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Mk Hasan Blog</title>
+      <link>https://mk-hasan.com/blog</link>
+      <description>A blog about programming, data and web development.</description>
+      <language>en-us</language>
+      <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
+      <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
+      <lastBuildDate>Sat, 06 Jun 2026 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mk-hasan.com/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mk-hasan.com/blog/social-multi-agent-4</guid>
+    <title>Building a Social Multi-Agent System — Part 4: Architecture, Memory &amp; Operations</title>
+    <link>https://mk-hasan.com/blog/social-multi-agent-4</link>
+    <description>Part 4 covers hexagonal architecture, the agent memory model, the background worker, Docker deployment, and the live agent explorer for learning multi-agent systems.</description>
+    <pubDate>Sat, 06 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>hexagonal-architecture</category><category>langgraph</category><category>postgresql</category><category>docker</category><category>ai-agents</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/social-multi-agent-3</guid>
+    <title>Building a Social Multi-Agent System — Part 3: The LangGraph Pipeline</title>
+    <link>https://mk-hasan.com/blog/social-multi-agent-3</link>
+    <description>Part 3 walks through the LangGraph StateGraph — every node, the validator retry loop, GraphState fields, and how three AI personas collaborate on one post.</description>
+    <pubDate>Fri, 05 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>langgraph</category><category>langchain</category><category>llm</category><category>python</category><category>ai-agents</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/social-multi-agent-2</guid>
+    <title>Building a Social Multi-Agent System — Part 2: The Feed Platform</title>
+    <link>https://mk-hasan.com/blog/social-multi-agent-2</link>
+    <description>Part 2 covers feed-web — the Next.js social feed that gives AI agents a real environment to post, comment, and like through a REST API.</description>
+    <pubDate>Wed, 03 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>nextjs</category><category>prisma</category><category>postgresql</category><category>rest-api</category><category>ai-agents</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/social-multi-agent-1</guid>
+    <title>Building a Social Multi-Agent System — Part 1: The Big Picture</title>
+    <link>https://mk-hasan.com/blog/social-multi-agent-1</link>
+    <description>Part 1 introduces a LangGraph-powered social feed where AI agents compose posts, validate them, publish to a real API, and simulate engagement — and explains why I built it.</description>
+    <pubDate>Mon, 01 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>ai-agents</category><category>langgraph</category><category>multi-agent</category><category>llm</category><category>python</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/anatomy-of-pyspark-2</guid>
+    <title>Common PySpark Operations for Data Wrangling</title>
+    <link>https://mk-hasan.com/blog/anatomy-of-pyspark-2</link>
+    <description>This guide covers essential PySpark operations for data cleaning, transformation, and analysis. Learn how to handle missing values, join DataFrames, use window functions, and more with practical code examples.</description>
+    <pubDate>Wed, 15 Nov 2023 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>pyspark</category><category>data-wrangling</category><category>data-engineering</category><category>dataframes</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/anatomy-of-pyspark-1</guid>
+    <title>Anatomy of Semi-Structured (JSON) Data with PySpark</title>
+    <link>https://mk-hasan.com/blog/anatomy-of-pyspark-1</link>
+    <description>This guide explores how to handle semi-structured JSON data using PySpark. It details Spark&#39;s complex data types—Array, Struct, and Map—and demonstrates how to parse, access, and flatten nested JSON records for efficient data transformation.</description>
+    <pubDate>Sun, 25 Oct 2020 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>pyspark</category><category>json</category><category>data-types</category><category>data-engineering</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/ml-with-golang</guid>
+    <title>What is the future for Machine Learning / Deep Learning with GoLang!</title>
+    <link>https://mk-hasan.com/blog/ml-with-golang</link>
+    undefined
+    <pubDate>Fri, 17 Jul 2020 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>Machine Learning</category><category>Clustering</category><category>Adjusted Rand Index</category><category>Go</category><category>Golang</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/adjusted-rand-index</guid>
+    <title> What is Adjusted Rand Index and How it works! </title>
+    <link>https://mk-hasan.com/blog/adjusted-rand-index</link>
+    undefined
+    <pubDate>Tue, 14 Apr 2020 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>Machine Learning</category><category>Clustering</category><category>Adjusted Rand Index</category>
+  </item>
+
+    </channel>
+  </rss>

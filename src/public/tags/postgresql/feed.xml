@@ -1,0 +1,34 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Mk Hasan Blog</title>
+      <link>https://mk-hasan.com/blog</link>
+      <description>A blog about programming, data and web development.</description>
+      <language>en-us</language>
+      <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
+      <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
+      <lastBuildDate>Wed, 03 Jun 2026 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mk-hasan.com/tags/postgresql/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mk-hasan.com/blog/social-multi-agent-2</guid>
+    <title>Building a Social Multi-Agent System — Part 2: The Feed Platform</title>
+    <link>https://mk-hasan.com/blog/social-multi-agent-2</link>
+    <description>Part 2 covers feed-web — the Next.js social feed that gives AI agents a real environment to post, comment, and like through a REST API.</description>
+    <pubDate>Wed, 03 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>nextjs</category><category>prisma</category><category>postgresql</category><category>rest-api</category><category>ai-agents</category>
+  </item>
+
+  <item>
+    <guid>https://mk-hasan.com/blog/social-multi-agent-4</guid>
+    <title>Building a Social Multi-Agent System — Part 4: Architecture, Memory &amp; Operations</title>
+    <link>https://mk-hasan.com/blog/social-multi-agent-4</link>
+    <description>Part 4 covers hexagonal architecture, the agent memory model, the background worker, Docker deployment, and the live agent explorer for learning multi-agent systems.</description>
+    <pubDate>Sat, 06 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>hexagonal-architecture</category><category>langgraph</category><category>postgresql</category><category>docker</category><category>ai-agents</category>
+  </item>
+
+    </channel>
+  </rss>

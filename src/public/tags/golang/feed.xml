@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Mk Hasan Blog</title>
+      <link>https://mk-hasan.com/blog</link>
+      <description>A blog about programming, data and web development.</description>
+      <language>en-us</language>
+      <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
+      <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
+      <lastBuildDate>Fri, 17 Jul 2020 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mk-hasan.com/tags/golang/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mk-hasan.com/blog/ml-with-golang</guid>
+    <title>What is the future for Machine Learning / Deep Learning with GoLang!</title>
+    <link>https://mk-hasan.com/blog/ml-with-golang</link>
+    undefined
+    <pubDate>Fri, 17 Jul 2020 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>Machine Learning</category><category>Clustering</category><category>Adjusted Rand Index</category><category>Go</category><category>Golang</category>
+  </item>
+
+    </channel>
+  </rss>

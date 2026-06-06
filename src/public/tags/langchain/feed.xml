@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Mk Hasan Blog</title>
+      <link>https://mk-hasan.com/blog</link>
+      <description>A blog about programming, data and web development.</description>
+      <language>en-us</language>
+      <managingEditor>hasan.alive@gmail.com (Mk Hasan)</managingEditor>
+      <webMaster>hasan.alive@gmail.com (Mk Hasan)</webMaster>
+      <lastBuildDate>Fri, 05 Jun 2026 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://mk-hasan.com/tags/langchain/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://mk-hasan.com/blog/social-multi-agent-3</guid>
+    <title>Building a Social Multi-Agent System — Part 3: The LangGraph Pipeline</title>
+    <link>https://mk-hasan.com/blog/social-multi-agent-3</link>
+    <description>Part 3 walks through the LangGraph StateGraph — every node, the validator retry loop, GraphState fields, and how three AI personas collaborate on one post.</description>
+    <pubDate>Fri, 05 Jun 2026 00:00:00 GMT</pubDate>
+    <author>hasan.alive@gmail.com (Mk Hasan)</author>
+    <category>langgraph</category><category>langchain</category><category>llm</category><category>python</category><category>ai-agents</category>
+  </item>
+
+    </channel>
+  </rss>

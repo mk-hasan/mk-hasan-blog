@@ -10,7 +10,7 @@ import Tag from '@/components/Tag'
 import { motion } from 'framer-motion'
 import siteMetadata from '@/data/siteMetadata'
 import tagData from 'app/tag-data.json'
-import { calculateReadingTime, formatReadingTime } from '../utils/readingTime'
+import { getReadingTimeLabel } from '../utils/readingTime'
 
 interface PaginationProps {
   totalPages: number
@@ -128,8 +128,8 @@ export default function ListLayoutWithTags({
           <div>
             <ul>
               {displayPosts.map((post) => {
-                const { path, date, title, summary, tags, body } = post
-                const readingTime = formatReadingTime(calculateReadingTime(body?.raw || summary || ''))
+                const { path, date, title, summary, tags } = post
+                const readingTime = getReadingTimeLabel(post)
                 return (
                   <li key={path} className="py-5">
                     <article className="flex flex-col space-y-2 xl:space-y-0">
