@@ -24,10 +24,10 @@ export default function Home({ posts }) {
     >
       <div className="flex-1">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
-          Kamrul Hasan — Data Platform Lead & AI Consultant
+          Kamrul Hasan — Senior Data and AI Consultant
         </h1>
         <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-6 max-w-2xl">
-          I architect scalable data platforms and deliver practical AI solutions. From data ingestion to intelligent applications, I help teams move faster with clarity, reliability, and impact.
+          I build scalable data platforms and ship practical AI systems — from ingestion and MLOps to agentic workflows. Recently moved to a new team; writing here about what I learn along the way.
         </p>
 
         <div className="flex gap-4">
@@ -67,7 +67,7 @@ export default function Home({ posts }) {
           About Me
         </h2>
         <p className="text-lg text-gray-700 dark:text-gray-300 mb-2">
-          Data Platform Lead with deep experience in data engineering, MLOps, and AI. I build trustworthy data foundations and mentor teams to deliver end-to-end outcomes.
+          Senior Data and AI Consultant with deep experience in data engineering, MLOps, and agentic AI. I build trustworthy data foundations and help teams deliver end-to-end outcomes.
         </p>
         <a
           href="/about"
