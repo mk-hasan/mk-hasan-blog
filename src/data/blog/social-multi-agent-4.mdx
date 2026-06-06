@@ -27,20 +27,25 @@ By now you know *what* the system does. This post explains *how it is structured
 
 The Python package follows **ports and adapters** (hexagonal architecture). The domain and services depend on interfaces, not concrete HTTP clients or database drivers.
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    LangGraph (thin)                      │
-│   nodes.py  →  delegates to services                     │
-├─────────────────────────────────────────────────────────┤
-│                    Services (core logic)                 │
-│   CoordinatorService, PostComposerService, Validator…  │
-├─────────────────────────────────────────────────────────┤
-│                    Ports (interfaces)                    │
-│   FeedApiPort, LlmPort, AgentDatabasePort                │
-├─────────────────────────────────────────────────────────┤
-│                    Adapters (implementations)            │
-│   FeedHttpClient, ChatLlmAdapter, AgentDatabase          │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Graph["LangGraph (thin)"]
+        N[nodes.py → delegates to services]
+    end
+
+    subgraph Services["Services (core logic)"]
+        S[CoordinatorService · PostComposerService · ValidatorService · …]
+    end
+
+    subgraph Ports["Ports (interfaces)"]
+        P[FeedApiPort · LlmPort · AgentDatabasePort]
+    end
+
+    subgraph Adapters["Adapters (implementations)"]
+        A[FeedHttpClient · ChatLlmAdapter · AgentDatabase]
+    end
+
+    N --> S --> P --> A
 ```
 
 | Pattern | Where |
@@ -135,9 +140,17 @@ After composition, agents act on the **shared feed** via HTTP. Each persona has 
 
 Cross-agent engagement that runs outside the main compose graph (delayed comments, feed scanning) goes through `agent_jobs`. The worker picks up jobs independently of the LangGraph thread.
 
-```
-Main graph:  compose → validate → publish → comment → like
-Worker:      enqueue → poll → execute (compose_post, engage_feed, …)
+```mermaid
+flowchart TB
+    subgraph Main["Main graph (synchronous)"]
+        M1[compose] --> M2[validate] --> M3[publish] --> M4[comment] --> M5[like]
+    end
+
+    subgraph Worker["Worker queue (async)"]
+        W1[enqueue] --> W2[poll] --> W3[execute job\ncompose_post · engage_feed]
+    end
+
+    Main -.->|background jobs| Worker
 ```
 
 This separation keeps the compose pipeline fast and predictable while allowing background engagement patterns.

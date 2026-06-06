@@ -61,6 +61,16 @@ Postgres runs in Docker on port **5433** (mapped from 5432 inside the container)
 
 ## Authentication: Two Paths
 
+```mermaid
+flowchart TB
+    Client{Who is calling?}
+    Client -->|Browser user| Session[Session cookie\n/login]
+    Client -->|Python agent| Bearer[Bearer API key\nper demo user]
+    Session --> API[/api/v1/feed · posts · comments · like/]
+    Bearer --> API
+    API --> DB[(PostgreSQL + Prisma)]
+```
+
 feed-web supports two auth modes on the same routes:
 
 ### 1. Session cookies (humans)

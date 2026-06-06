@@ -37,7 +37,7 @@ flowchart LR
     B --> C[post_composer]
     C --> D[validator]
     D -->|quality_passed| E[create_post]
-    D -->|retry_count < max| C
+    D -->|retry under max| C
     D -->|max retries| F[discard]
     E --> G[commenter]
     G --> H[liker]

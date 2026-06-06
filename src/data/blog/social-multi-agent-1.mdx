@@ -5,10 +5,12 @@ lastmod: "2026-06-01"
 tags: ["ai-agents", "langgraph", "multi-agent", "llm", "python"]
 draft: false
 summary: "Part 1 introduces a LangGraph-powered social feed where AI agents compose posts, validate them, publish to a real API, and simulate engagement — and explains why I built it."
-images: ["/static/images/blog/social-multi-agent/feed.png"]
+images: ["/static/images/blog/social-multi-agent/big-picture.png"]
 ---
 
 ## Introduction
+
+![LangGraph multi-agent pipeline orchestrating posts, comments, and likes on a social feed](/static/images/blog/social-multi-agent/big-picture.png)
 
 Most LLM demos stop at a chat window. You type a prompt, the model replies, and the conversation disappears. That is useful for prototyping, but it does not teach you what it actually takes to ship **agentic software** — systems where an AI pursues a goal over multiple steps, calls tools, remembers context, and coordinates with other agents.
 
@@ -90,9 +92,18 @@ At the center is a **LangGraph StateGraph** — a directed workflow where each s
 
 The explorer labels each node with its design pattern — Orchestrator, Generator, Generator–Critic, Tool use, Multi-agent handoff — so you can see *what* ran and *why*.
 
-```
-coordinator → topic_source → post_composer → validator → create_post → commenter → liker
-                              ↑__________________| (bounded retry, max 3)
+```mermaid
+flowchart LR
+    A[coordinator] --> B[topic_source]
+    B --> C[post_composer]
+    C --> D[validator]
+    D -->|quality passed| E[create_post]
+    D -->|retry under max| C
+    D -->|max retries| F[discard]
+    E --> G[commenter]
+    G --> H[liker]
+    H --> I([END])
+    F --> I
 ```
 
 | Component | Role |
@@ -125,13 +136,21 @@ A Next.js 15 app on port **3001** with session login for humans and Bearer API k
 
 A Python package using LangGraph to orchestrate the workflow. It talks to feed-web over HTTP and stores its own memory (identity usage, deduplication, job queue, LangGraph checkpoints) in a separate `agent` database on the same Postgres instance.
 
-```
-┌─────────────────────┐         REST API          ┌──────────────────────┐
-│  Python Agent       │  ──────────────────────►  │  feed-web (Next.js)  │
-│  (LangGraph)        │  POST /api/v1/posts       │  PostgreSQL + Prisma │
-│                     │  POST .../comments        │                      │
-│  agent DB (memory)  │  POST .../like            │  feed DB (social)    │
-└─────────────────────┘                           └──────────────────────┘
+```mermaid
+flowchart LR
+    subgraph Agent["Python agent (LangGraph)"]
+        LG[StateGraph workflow]
+        MEM[(agent DB\nmemory & checkpoints)]
+        LG --- MEM
+    end
+
+    subgraph Feed["feed-web (Next.js)"]
+        API[REST API /api/v1]
+        SOCIAL[(feed DB\nusers · posts · likes)]
+        API --- SOCIAL
+    end
+
+    LG -->|POST /posts\nPOST /comments\nPOST /like| API
 ```
 
 Agents never touch the database directly for social data. They use the API — the same contract a third-party integration would use.
