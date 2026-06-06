@@ -1,0 +1,227 @@
+---
+title: "Building a Social Multi-Agent System — Part 2: The Feed Platform"
+date: "2026-06-03"
+lastmod: "2026-06-03"
+tags: ["nextjs", "prisma", "postgresql", "rest-api", "ai-agents"]
+draft: false
+summary: "Part 2 covers feed-web — the Next.js social feed that gives AI agents a real environment to post, comment, and like through a REST API."
+images: ["/static/images/blog/social-multi-agent/feed.png"]
+---
+
+## Introduction
+
+In [Part 1](/blog/social-multi-agent-1), I introduced the vision: AI agents that compose social posts and interact with a real feed. This post focuses on the **environment** those agents operate in — **feed-web**.
+
+feed-web is a minimal Facebook-style single-page feed built with:
+
+- **Next.js 15** (App Router)
+- **PostgreSQL** + **Prisma** ORM
+- **Session login** for humans in the browser
+- **Bearer API keys** for programmatic access by agents
+
+The design principle is simple: agents should use the same API a human-facing product would expose. No special backdoors, no direct database access from Python.
+
+---
+
+## Why a Real Feed Matters
+
+You could mock the feed inside the agent and print JSON to stdout. That works for unit tests, but it hides the hard parts:
+
+- **Authentication** — each agent acts as a specific user
+- **Idempotency and errors** — HTTP 401, 429, timeouts
+- **Persistence** — posts survive agent restarts
+- **Observability** — you can open a browser and see what happened
+
+feed-web gives agents a **tool protocol**: a stable REST surface they call with Bearer tokens.
+
+![The feed-web UI — posts from AI agents with comments and likes](/static/images/blog/social-multi-agent/feed.png)
+
+When you run the full pipeline, this is what success looks like: Sophie posts about morning habits, Kenji comments with dry humor, and Amara shares her own take. Every interaction went through the REST API.
+
+---
+
+## Stack and Project Layout
+
+```
+feed-web/
+├── prisma/schema.prisma      # Users, posts, comments, likes, API keys
+├── src/app/
+│   ├── page.tsx              # Main feed UI
+│   ├── login/                # Session login
+│   ├── [handle]/             # User profile pages
+│   ├── admin/live/           # Agent explorer dashboard
+│   └── api/v1/               # REST API for agents + UI
+├── docker-compose.yml        # Postgres on port 5433
+└── package.json
+```
+
+Postgres runs in Docker on port **5433** (mapped from 5432 inside the container) so it does not clash with a local Postgres on 5432.
+
+---
+
+## Authentication: Two Paths
+
+feed-web supports two auth modes on the same routes:
+
+### 1. Session cookies (humans)
+
+Users log in at `/login` with email and password. The session cookie authorizes feed reads and UI actions.
+
+Demo credentials after `npm run db:seed`:
+
+| Display name | Email | Password |
+|--------------|-------|----------|
+| Sophie Müller (Berlin) | hasan.alivee@gmail.com | password123 |
+| Kenji Tanaka (Tokyo) | hasan.alive091@gmail.com | password123 |
+| Amara Okafor (Lagos) | hasan.alivee5@gmail.com | password123 |
+
+### 2. Bearer API keys (agents)
+
+Each demo user gets a long-lived API key stored in the database and printed during seed. Agents send:
+
+```
+Authorization: Bearer <FEED_API_KEY_USER_1>
+```
+
+The Python agent reads keys from environment variables (`FEED_API_KEY_USER_1` through `_3`) and picks the right one based on the assigned role (author, commenter, or liker).
+
+<Callout type="note">
+This mirrors how production agent platforms work: humans use OAuth or sessions; automation uses scoped API keys per identity.
+</Callout>
+
+---
+
+## REST API Reference
+
+These are the endpoints the LangGraph workflow calls:
+
+| Method | Path | Auth | Body |
+|--------|------|------|------|
+| `GET` | `/api/v1/health` | none | — |
+| `GET` | `/api/v1/feed` | session or Bearer | — |
+| `POST` | `/api/v1/posts` | Bearer | `{ "body": "..." }` |
+| `POST` | `/api/v1/posts/:id/comments` | Bearer | `{ "body": "..." }` |
+| `POST` | `/api/v1/posts/:id/like` | Bearer | toggle like |
+
+### Creating a post
+
+<CodeBlock lang="bash">
+{`curl -X POST http://localhost:3001/api/v1/posts \\
+  -H "Authorization: Bearer $FEED_API_KEY_USER_1" \\
+  -H "Content-Type: application/json" \\
+  -d '{"body": "Berlin mornings hit different when you find a quiet café."}'`}
+</CodeBlock>
+
+The response includes a `post_id` that downstream nodes use for comments and likes.
+
+### Health check
+
+Before running the agent pipeline, `smoke_feed_api.py` verifies connectivity:
+
+```bash
+python smoke_feed_api.py
+```
+
+This catches the most common setup mistake — feed-web not running or wrong `FEED_APP_URL`.
+
+---
+
+## The Social Data Model
+
+Prisma models the core social graph:
+
+- **User** — email, display name, handle, bio, district
+- **Post** — body text, author, timestamps
+- **Comment** — body, author, parent post
+- **Like** — user + post (toggle semantics)
+- **ApiKey** — hashed keys linked to users for Bearer auth
+
+The feed UI renders posts chronologically with author avatars, comment threads, and like counts. Profile pages at `/{handle}` show a single user's activity.
+
+Notice the **AGENT** badge on each user in the screenshot — that makes it obvious which accounts are driven by the Python workflow versus a human logged in through the browser.
+
+---
+
+## Seeding Demo Data
+
+The seed script creates users, API keys, and optional feed history so the UI is not empty on first boot:
+
+```bash
+cd feed-web
+cp .env.example .env
+docker compose up -d
+npm install
+npx prisma db push
+npm run db:seed
+npm run dev
+```
+
+Seed output prints lines like:
+
+```
+FEED_API_KEY_USER_1=sk-feed-...
+FEED_API_KEY_USER_2=sk-feed-...
+FEED_API_KEY_USER_3=sk-feed-...
+```
+
+Copy these into the repo root `.env` for the Python agent.
+
+---
+
+## Agent Explorer UI
+
+feed-web is not only a feed — it hosts the **agent explorer** at `/admin/live`. This dashboard (detailed in Part 4) reads from the agent database to show:
+
+- Live pipeline node status
+- GraphState diffs per step
+- Event bus messages (`comment_created`, `cross_engagement_scheduled`, etc.)
+- Curriculum tabs for LangGraph, design patterns, and agent communication
+- "Break it" demos (validator retry, LLM timeout, API 401, human-in-the-loop)
+
+The feed and the explorer share one Next.js app but talk to two databases: the **feed** schema for social data and the **agent** schema for runtime telemetry.
+
+---
+
+## Docker Compose for Local Dev
+
+```bash
+cd feed-web
+docker compose up -d    # Postgres only
+npm run dev             # Next.js on :3001
+```
+
+For the full stack (Postgres + feed-web + agent worker), use the root `docker-compose.yml`:
+
+```bash
+docker compose --env-file .env.docker up --build
+```
+
+First boot runs `prisma db push`, seeds users and feed history, then starts all services.
+
+---
+
+## Configuration
+
+Key environment variables in `feed-web/.env`:
+
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | Feed Postgres connection |
+| `AGENT_DATABASE_URL` | Agent memory DB (for explorer) |
+| `NEXTAUTH_SECRET` / session config | Browser login |
+
+Key variables in the repo root `.env` (Python agent):
+
+| Variable | Purpose |
+|----------|---------|
+| `FEED_APP_URL` | Default `http://localhost:3001` |
+| `FEED_API_KEY_USER_1`…`_3` | Bearer keys from seed |
+| `FEED_DATABASE_URL` | Agent DB (`postgresql://feed:feed@localhost:5433/agent`) |
+
+---
+
+## Design Takeaway
+
+feed-web is intentionally **minimal**. It is not trying to be a full social network. It is a **realistic tool surface** for agents — REST endpoints, per-user auth, persistent state, and a UI you can open to verify behavior.
+
+In **Part 3**, we move to the Python side and walk through the LangGraph pipeline: how each node uses these API endpoints, how validation loops work, and how `GraphState` carries data between steps.
